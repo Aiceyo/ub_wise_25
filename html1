@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Scroll-Webseite mit erweitertem Verhalten</title>
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, proxy-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta http-equiv="Surrogate-Control" content="no-store" />
+  <style>
+    /* Grundlayout: Schwarz-Hintergrund, weiße Schrift */
+    * {
+      box-sizing: border-box;
+    }
+    body, html {
+      margin: 0; padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #000;
+      color: #fff;
+      user-select: none;
+    }
+
+    #app {
+      display: flex;
+      height: 100vh;
+      max-width: 1920px;
+      margin: 0 auto;
+    }
+
+    /* Linke Sidebar Inhaltsverzeichnis */
+    #sidebar {
+      flex: 0 0 18%;
+      min-width: 220px;
+      background-color: #111;
+      border-right: 2px solid #222;
+      padding: 1.5rem 1rem 1.5rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+    }
+    #sidebar h2 {
+      margin-top: 0;
+      margin-bottom: 2rem;
+      font-weight: 700;
+      font-size: 1.6rem;
+      cursor: default;
+      user-select: none;
+      border-bottom: 1px solid #444;
+      padding-bottom: 0.5rem;
+    }
+    #toc {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      flex-grow: 1;
+    }
+    #toc li {
+      margin-bottom: 1.2rem;
+    }
+    #toc button {
+      background: none;
+      border: none;
+      color: #7ecfff;
+      font-size: 1.1rem;
+      text-align: left;
+      width: 100%;
+      padding: 0;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background-color 0.25s ease;
+      user-select: none;
+    }
+    #toc button:hover, #toc button:focus {
+      background-color: #004466;
+      outline: none;
+    }
+    #toc button.active {
+      color: #50e3c2;
+      font-weight: 700;
+      background-color: #003344;
+    }
+
+    /* Rechte Hauptspalte */
+    #content {
+      flex: 1;
+      padding: 2rem 3rem;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      max-width: 1400px;
+      margin-left: auto;
+      margin-right: 3rem;
+      user-select: text;
+    }
+    #content-inner {
+      position: relative;
+      max-width: 100%;
+      height: 100%;
+      overflow: hidden; /* kein Scrollen – wir steuern per JS */
+      padding-right: 15px;
+    }
+
+    /* Kapitel-Container: nur ein Kapitel sichtbar */
+    .chapter {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+      padding-right: 10px;
+    }
+    .chapter.active {
+      display: flex;
+    }
+
+    /* Bausteine im Kapitel (bauen sich stufenweise auf) */
+    .build-element {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      margin-bottom: 2.5rem;
+      max-width: 100%;
+    }
+    .build-element.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* Textbausteine */
+    .build-text h2 {
+      margin-top: 0;
+      font-weight: 700;
+      font-size: 2rem;
+      color: #50e3c2;
+      user-select: text;
+    }
+    .build-text p {
+      line-height: 1.6;
+      font-size: 1.2rem;
+      color: #ddd;
+      user-select: text;
+    }
+
+    /* Tooltip-Wörter */
+    .tooltip-word {
+      color: #7ecfff;
+      cursor: help;
+      border-bottom: 1.5px dashed #7ecfff;
+      position: relative;
+      user-select: text;
+    }
+    .tooltip-word:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #004466;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 8px;
+      white-space: nowrap;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 10px rgb(0 0 0 / 0.5);
+      pointer-events: none;
+      opacity: 1;
+      transition: opacity 0.3s ease;
+      z-index: 15;
+    }
+    .tooltip-word::after {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      content: '';
+      pointer-events: none;
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: transparent;
+      padding: 0;
+      border-radius: 0;
+      font-size: 0;
+      white-space: nowrap;
+      box-shadow: none;
+      z-index: 0;
+    }
+
+    /* Grafik */
+    .build-graphic {
+      width: 100%;
+      max-width: 900px;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow:
+        0 15px 30px rgba(80, 227, 194, 0.3),
+        inset 0 0 50px rgba(80, 227, 194, 0.15);
+      user-select: none;
+    }
+    .build-graphic img {
+      display: block;
+      width: 100%;
+      height: auto;
+      transition: opacity 0.3s ease;
+    }
+
+    /* Checkbox-Grafik Steuerung */
+    #checkbox-graphic-controller {
+      margin-top: 1rem;
+      background-color: #111;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      max-width: 400px;
+      box-shadow:
+        inset 0 0 15px rgba(80, 227, 194, 0.1);
+      user-select: none;
+      color: #7ecfff;
+      font-weight: 600;
+    }
+    #checkbox-graphic-controller label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+    #checkbox-graphic-controller input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    /* Tabelle - Kapitel 4 */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      color: #ddd;
+      font-size: 1.1rem;
+    }
+    th, td {
+      border: 1px solid #50e3c2;
+      padding: 0.7rem 1rem;
+      text-align: left;
+    }
+    th {
+      background-color: #007f7f;
+    }
+    tr:nth-child(even) {
+      background-color: #003333;
+    }
+
+    /* Popup Notification - Kapitel 5 */
+    #popup-notification {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      background-color: #50e3c2;
+      color: #000;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 15px rgba(80, 227, 194, 0.6);
+      font-weight: 700;
+      font-size: 1.1rem;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(100%);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      z-index: 9999;
+      max-width: 300px;
+    }
+    #popup-notification.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      #app {
+        flex-direction: column;
+      }
+      #sidebar {
+        flex: none;
+        min-width: 100%;
+        border-right: none;
+        border-bottom: 2px solid #222;
+        padding: 1rem 1rem 1rem 1rem;
+      }
+      #content {
+        max-width: 100%;
+        margin: 0;
+        padding: 1.5rem 1.5rem 3rem 1.5rem;
+        height: calc(100vh - 130px);
+      }
+      #content-inner {
+        height: 100%;
+        overflow: visible;
+      }
+      .chapter {
+        overflow-y: visible;
+        display: block !important;
+      }
+      #popup-notification {
+        position: fixed;
+        top: auto;
+        bottom: 2rem;
+        right: 50%;
+        left: 50%;
+        transform: translate(-50%, 100%);
+        max-width: 90vw;
+      }
+      #popup-notification.visible {
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app" role="main" aria-label="Scroll-Webseite mit erweitertem Verhalten">
+
+    <!-- Linkes Inhaltsverzeichnis -->
+    <nav id="sidebar" aria-label="Inhaltsverzeichnis">
+      <h2>Inhalt</h2>
+      <ul id="toc" role="list">
+        <!-- Buttons per JS -->
+      </ul>
+    </nav>
+
+    <!-- Rechter Hauptinhalt -->
+    <section id="content" aria-live="polite" aria-atomic="false" tabindex="0">
+      <div id="content-inner" role="region" aria-live="polite" aria-atomic="false" tabindex="0">
+        <!-- Kapitelcontainer dynamisch per JS -->
+      </div>
+    </section>
+
+    <!-- Popup Notification Kapitel 5 -->
+    <div id="popup-notification" role="alert" aria-live="assertive" aria-atomic="true" hidden>
+      <!-- Dynamisch gefüllt -->
+    </div>
+
+  </div>
+
+<script>
+  (function() {
+    // 6 Kapitel mit Elementen; Sounds entfernt.
+    // Kapitel 2 enthält Checkbox-gesteuerte Grafik mit 8 Zuständen.
+    // Kapitel 4 enthält Tabelle.
+    // Kapitel 5 zeigt Popup-Notification beim Erreichen.
+
+    const chapters = [
+      {
+        id: "kapitel1",
+        title: "Kapitel 1: Erste Schritte",
+        elements: [
+          { type: "text", headline: "Willkommen!", paragraphs: [
+            'Dies ist die <span class="tooltip-word" data-tooltip="Der Anfang einer spannenden Reise">Einführung</span> ' +
+            'in unsere Webseite mit besonderem Scrollverhalten.'
+          ]},
+          { type: "text", headline: "Was erwartet Sie?", paragraphs: [
+            "Neue Texte, Grafiken und interaktive Elemente erscheinen stufenweise beim Scrollen."
+          ]},
+          { type: "graphic", alt: "Grafik Erste Schritte", src: "https://via.placeholder.com/900x400/2a2a2a/50e3c2?text=Kapitel+1+Grafik" }
+        ]
+      },
+      {
+        id: "kapitel2",
+        title: "Kapitel 2: Grafik-Checkbox-System",
+        elements: [
+          { type: "text", headline: "Das Checkbox-System", paragraphs: [
+            "In diesem Kapitel wechselt die Grafik je nach Auswahl der Checkboxen C1, C2 und C3.",
+            'Die Checkboxen unterhalb der Grafik steuern, welche Grafik angezeigt wird.'
+          ]},
+          {
+            type: "checkbox-graphic",
+            alt: "Checkbox-gesteuerte Grafik",
+            graphics: {
+              "000": {src:"https://via.placeholder.com/900x400/660000/ffffff?text=Grafik+C0", alt:"Grafik ohne Checkboxen"},
+              "100": {src:"https://via.placeholder.com/900x400/006600/ffffff?text=Grafik+C1", alt:"Grafik mit C1 ausgewählt"},
+              "010": {src:"https://via.placeholder.com/900x400/000066/ffffff?text=Grafik+C2", alt:"Grafik mit C2 ausgewählt"},
+              "001": {src:"https://via.placeholder.com/900x400/666600/000000?text=Grafik+C3", alt:"Grafik mit C3 ausgewählt"},
+              "110": {src:"https://via.placeholder.com/900x400/006666/ffffff?text=Grafik+C1+C2", alt:"Grafik mit C1 und C2"},
+              "101": {src:"https://via.placeholder.com/900x400/660066/ffffff?text=Grafik+C1+C3", alt:"Grafik mit C1 und C3"},
+              "011": {src:"https://via.placeholder.com/900x400/666666/ffffff?text=Grafik+C2+C3", alt:"Grafik mit C2 und C3"},
+              "111": {src:"https://via.placeholder.com/900x400/000000/50e3c2?text=Grafik+C1+C2+C3", alt:"Grafik mit C1, C2 und C3"}
+            }
+          },
+          { type: "text", headline: "Wie funktioniert das?", paragraphs: [
+            "Durch An- und Abwählen der Checkboxen ändert sich die Grafik entsprechend der Kombination.",
+            "Dies macht die Seite interaktiv und lässt vielfältige Darstellungen zu."
+          ]}
+        ]
+      },
+      {
+        id: "kapitel3",
+        title: "Kapitel 3: Vertiefung",
+        elements: [
+          { type: "text", headline: "Was macht die Seite besonders?", paragraphs: [
+            "Stufenweise Aufbauten fördern Aufmerksamkeit und erleichtern das Verständnis."
+          ]},
+          { type: "graphic", alt: "Vertiefung Grafik", src: "https://via.placeholder.com/900x400/335544/50e3c2?text=Kapitel+3+Grafik" },
+          { type: "text", headline: "Bedienfreundlichkeit", paragraphs: [
+            "Leicht nachvollziehbare Navigation und Controls für Grafiken."
+          ]}
+        ]
+      },
+      {
+        id: "kapitel4",
+        title: "Kapitel 4: Highlights",
+        elements: [
+          { type: "text", headline: "Besondere Funktionen", paragraphs: [
+            "Clever kombiniert: Animationen und Interaktivität."
+          ]},
+          { type: "table", headline: "Beispiel-Tabelle", tableData: {
+            headers: ["Name", "Funktion", "Erfahrung"],
+            rows: [
+              ["Anna", "Entwicklerin", "5 Jahre"],
+              ["Ben", "Designer", "3 Jahre"],
+              ["Clara", "Projektmanagerin", "7 Jahre"],
+              ["David", "Tester", "2 Jahre"]
+            ]
+          }},
+          { type: "text", headline: "Nutzererlebnis", paragraphs: [
+            "Klares Layout und hochwertige Präsentation."
+          ]}
+        ]
+      },
+      {
+        id: "kapitel5",
+        title: "Kapitel 5: Zusammenfassung",
+        elements: [
+          { type: "text", headline: "Was haben wir gelernt?", paragraphs: [
+            "Gestaffeltes Scrollen ordnet Inhalte übersichtlich."
+          ]},
+          { type: "graphic", alt: "Zusammenfassung Grafik", src: "https://via.placeholder.com/900x400/224455/50e3c2?text=Kapitel+5+Grafik" },
+          { type: "notification", headline: "Hinweis", message: "Dieses Popup erscheint kurz und verschwindet automatisch wie eine Messenger-Nachricht." },
+          { type: "text", headline: "Weiterführend", paragraphs: [
+            "Tooltips und komfortable Steuerung verbessern die Erfahrung."
+          ]}
+        ]
+      },
+      {
+        id: "kapitel6",
+        title: "Kapitel 6: Ausblick",
+        elements: [
+          { type: "text", headline: "Die Zukunft", paragraphs: [
+            "Diese Technik ist vielseitig für moderne Webprojekte einsetzbar."
+          ]},
+          { type: "graphic", alt: "Ausblick Grafik", src: "https://via.placeholder.com/900x400/443322/7ecfff?text=Kapitel+6+Grafik" },
+          { type: "text", headline: "Danke fürs Anschauen!", paragraphs: [
+            "Wir hoffen, Sie hatten Freude an dieser innovativen Präsentation."
+          ]}
+        ]
+      }
+    ];
+
+    const tocContainer = document.getElementById('toc');
+    const contentInner = document.getElementById('content-inner');
+    const popupNotification = document.getElementById('popup-notification');
+
+    const chapterContainers = [];
+    const chapterElementCounts = chapters.map(ch => ch.elements.length);
+
+    // Popup Timer Id
+    let popupTimerId = null;
+
+    // --- Inhaltsverzeichnis ---
+    chapters.forEach((chapter, idx) => {
+      const li = document.createElement('li');
+      const btn = document.createElement('button');
+      btn.type = "button";
+      btn.textContent = chapter.title;
+      btn.dataset.chapterIndex = idx;
+      btn.setAttribute('aria-controls', 'content-inner');
+
+      btn.addEventListener('click', () => {
+        showChapter(idx, chapterElementCounts[idx] - 1);
+        setActiveTOC(idx);
+      });
+
+      li.appendChild(btn);
+      tocContainer.appendChild(li);
+    });
+
+    // --- Kapitelcontainer bauen ---
+    chapters.forEach((chapter, chapterIndex) => {
+      const chapDiv = document.createElement('section');
+      chapDiv.classList.add('chapter');
+      chapDiv.id = chapter.id;
+      chapDiv.setAttribute('aria-label', chapter.title);
+      chapDiv.setAttribute('tabindex', '0');
+      contentInner.appendChild(chapDiv);
+
+      chapter.elements.forEach((elem) => {
+        let el;
+        switch(elem.type) {
+          case 'text':
+            el = document.createElement('article');
+            el.className = 'build-element build-text';
+            if(elem.headline) {
+              const h2 = document.createElement('h2');
+              h2.innerHTML = elem.headline;
+              el.appendChild(h2);
+            }
+            elem.paragraphs.forEach(ptext => {
+              const p = document.createElement('p');
+              p.innerHTML = ptext;
+              el.appendChild(p);
+            });
+            break;
+
+          case 'graphic':
+            el = document.createElement('div');
+            el.className = 'build-element build-graphic';
+            const img = document.createElement('img');
+            img.src = elem.src;
+            img.alt = elem.alt || 'Grafik';
+            img.loading = 'lazy';
+            el.appendChild(img);
+            break;
+
+          case 'checkbox-graphic':
+            el = document.createElement('div');
+            el.className = 'build-element build-graphic';
+            // Bild
+            const cbImg = document.createElement('img');
+            cbImg.alt = elem.alt || 'Checkbox gesteuerte Grafik';
+            cbImg.loading = 'lazy';
+            cbImg.style.opacity = '1';
+            el.appendChild(cbImg);
+
+            // Checkbox Container
+            const checkboxContainer = document.createElement('div');
+            checkboxContainer.id = 'checkbox-graphic-controller';
+
+            // Checkboxen C1, C2, C3
+            ['C1', 'C2', 'C3'].forEach(cbName => {
+              const label = document.createElement('label');
+              const checkbox = document.createElement('input');
+              checkbox.type = 'checkbox';
+              checkbox.id = `checkbox-${cbName}-${chapterIndex}`; // ID unique pro Kapitel
+              label.htmlFor = checkbox.id;
+              label.textContent = cbName;
+              label.prepend(checkbox);
+              checkboxContainer.appendChild(label);
+            });
+            el.appendChild(checkboxContainer);
+
+            // Funktion zur Ermittlung key aus Checkbox-States
+            function getCheckboxKey() {
+              return ['C1', 'C2', 'C3'].map(cb => {
+                const el = document.getElementById(`checkbox-${cb}-${chapterIndex}`);
+                return el && el.checked ? '1' : '0';
+              }).join('');
+            }
+
+            // Grafik update
+            function updateCheckboxGraphic() {
+              const key = getCheckboxKey();
+              const data = elem.graphics[key] || elem.graphics['000'];
+              if (cbImg.src !== data.src) {
+                cbImg.style.opacity = 0;
+                setTimeout(() => {
+                  cbImg.src = data.src;
+                  cbImg.alt = data.alt;
+                  cbImg.style.opacity = 1;
+                }, 250);
+              }
+            }
+
+            // EventListener Checkboxen pro Kapitel
+            ['C1', 'C2', 'C3'].forEach(cb => {
+              setTimeout(() => {
+                const el = document.getElementById(`checkbox-${cb}-${chapterIndex}`);
+                if (el) {
+                  el.addEventListener('change', updateCheckboxGraphic);
+                }
+              }, 0);
+            });
+
+            // Initial Update kurz verzögert, weil Checkboxen und Bild müssen im DOM sein
+            setTimeout(() => updateCheckboxGraphic(), 50);
+
+            break;
+
+          case 'table':
+            el = document.createElement('div');
+            el.className = 'build-element build-text';
+            if(elem.headline) {
+              const h2 = document.createElement('h2');
+              h2.textContent = elem.headline;
+              el.appendChild(h2);
+            }
+            // Tabelle bauen
+            const table = document.createElement('table');
+            const thead = document.createElement('thead');
+            const trHead = document.createElement('tr');
+            elem.tableData.headers.forEach(headText => {
+              const th = document.createElement('th');
+              th.textContent = headText;
+              trHead.appendChild(th);
+            });
+            thead.appendChild(trHead);
+            table.appendChild(thead);
+
+            const tbody = document.createElement('tbody');
+            elem.tableData.rows.forEach(rowData => {
+              const tr = document.createElement('tr');
+              rowData.forEach(cellText => {
+                const td = document.createElement('td');
+                td.textContent = cellText;
+                tr.appendChild(td);
+              });
+              tbody.appendChild(tr);
+            });
+            table.appendChild(tbody);
+            el.appendChild(table);
+            break;
+
+          case 'notification':
+            // kein Build-Element sichtbar, Popup separat
+            el = null;
+            break;
+
+          default:
+            el = null;
+        }
+        if (el) chapDiv.appendChild(el);
+      });
+
+      chapterContainers.push(chapDiv);
+    });
+
+    let currentChapterIndex = 0;
+    let currentElementIndex = -1;
+
+    function showChapter(chapterIndex, elementIdx) {
+      if (chapterIndex < 0) chapterIndex = 0;
+      if (chapterIndex >= chapters.length) chapterIndex = chapters.length - 1;
+
+      chapterContainers.forEach((chap, i) => {
+        if (i === chapterIndex) {
+          chap.classList.add('active');
+        } else {
+          chap.classList.remove('active');
+          // unsichtbar alle Elemente anderer Kapitel
+          chap.querySelectorAll('.build-element').forEach(el => el.classList.remove('visible'));
+        }
+      });
+
+      currentChapterIndex = chapterIndex;
+      // Mindestens Überschrift + erstes Element sichtbar
+      elementIdx = Math.max(elementIdx, 1); // mind 1
+      elementIdx = Math.min(elementIdx, chapterElementCounts[chapterIndex] - 1);
+      currentElementIndex = elementIdx;
+
+      const elems = chapterContainers[chapterIndex].querySelectorAll('.build-element');
+      elems.forEach((el, i) => {
+        if (i <= currentElementIndex) el.classList.add('visible');
+        else el.classList.remove('visible');
+      });
+
+      setActiveTOC(chapterIndex);
+      chapterContainers[chapterIndex].focus();
+      chapterContainers[chapterIndex].scrollTop = 0;
+
+      // Popup für Kapitel 5 (Index 4) bei Sichtbarkeit triggern
+      if (chapterIndex === 4) {
+        const notificationElem = chapters[chapterIndex].elements.find(e => e.type === 'notification');
+        if (notificationElem) {
+          showPopup(notificationElem.message);
+        }
+      } else {
+        hidePopup();
+      }
+    }
+
+    function setActiveTOC(chapterIndex) {
+      tocContainer.querySelectorAll('button').forEach((btn, i) => {
+        btn.classList.toggle('active', i === chapterIndex);
+      });
+    }
+
+    let wheelCooldown = false;
+    const WHEEL_COOLDOWN_TIME = 250;
+
+    function onWheelScroll(e) {
+      e.preventDefault();
+      if (wheelCooldown) return;
+      wheelCooldown = true;
+      setTimeout(() => wheelCooldown = false, WHEEL_COOLDOWN_TIME);
+
+      const delta = e.deltaY;
+      const maxIndex = chapterElementCounts[currentChapterIndex] - 1;
+
+      if (delta > 20) {
+        if (currentElementIndex < maxIndex) {
+          showChapter(currentChapterIndex, currentElementIndex + 1);
+        } else if (currentChapterIndex < chapters.length - 1) {
+          showChapter(currentChapterIndex + 1, 1);
+        }
+      } else if (delta < -20) {
+        if (currentElementIndex > 1) {
+          showChapter(currentChapterIndex, currentElementIndex - 1);
+        } else if (currentChapterIndex > 0) {
+          const prevMax = chapterElementCounts[currentChapterIndex - 1] - 1;
+          showChapter(currentChapterIndex - 1, prevMax);
+        }
+      }
+    }
+    contentInner.addEventListener('wheel', onWheelScroll, { passive: false });
+
+    // Touch-Support
+    let touchStartY = null;
+    contentInner.addEventListener('touchstart', e => {
+      if (e.touches.length === 1) touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+    contentInner.addEventListener('touchend', e => {
+      if (touchStartY === null) return;
+      const touchEndY = e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientY : null;
+      if (touchEndY === null) return;
+      const diff = touchStartY - touchEndY;
+      touchStartY = null;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) {
+          const maxIndex = chapterElementCounts[currentChapterIndex] - 1;
+          if (currentElementIndex < maxIndex) {
+            showChapter(currentChapterIndex, currentElementIndex + 1);
+          } else if (currentChapterIndex < chapters.length - 1) {
+            showChapter(currentChapterIndex + 1, 1);
+          }
+        } else {
+          if (currentElementIndex > 1) {
+            showChapter(currentChapterIndex, currentElementIndex - 1);
+          } else if (currentChapterIndex > 0) {
+            const prevMax = chapterElementCounts[currentChapterIndex - 1] - 1;
+            showChapter(currentChapterIndex - 1, prevMax);
+          }
+        }
+      }
+    }, { passive: true });
+
+    // Popup-Funktionen für Kapitel 5 Notification
+    function showPopup(message) {
+      if(popupTimerId) {
+        clearTimeout(popupTimerId);
+        popupTimerId = null;
+      }
+      popupNotification.textContent = message;
+      popupNotification.hidden = false;
+      popupNotification.classList.add('visible');
+      popupTimerId = setTimeout(() => {
+        hidePopup();
+      }, 5000);
+    }
+    function hidePopup() {
+      popupNotification.classList.remove('visible');
+      popupTimerId = setTimeout(() => {
+        popupNotification.hidden = true;
+      }, 500);
+    }
+
+    // Initial: Kapitel 1, Überschrift + erstes Element
+    showChapter(0, 1);
+
+  })();
+</script>
+
+</body>
+</html>

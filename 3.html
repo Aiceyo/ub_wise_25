@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Responsive Scroll-Webseite mit Kapitel 1-7 und animiertem Popup</title>
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, proxy-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<meta http-equiv="Surrogate-Control" content="no-store" />
+<style>
+  /* Basisstyles */
+  * {
+    box-sizing: border-box;
+  }
+  body, html {
+    margin: 0; padding: 0;
+    height: 100vh;
+    overflow: hidden;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #000;
+    color: #fff;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #app {
+    display: flex;
+    height: 100vh;
+    max-width: 1920px;
+    margin: 0 auto;
+    flex-direction: row;
+  }
+  /* Sidebar */
+  #sidebar {
+    flex: 0 0 18%;
+    min-width: 220px;
+    background-color: #111;
+    border-right: 2px solid #222;
+    padding: 1.5rem 1rem 1.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    user-select: none;
+  }
+  #sidebar h2 {
+    margin-top: 0;
+    margin-bottom: 2rem;
+    font-weight: 700;
+    font-size: 1.6rem;
+    border-bottom: 1px solid #444;
+    user-select: none;
+  }
+  #toc {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+  }
+  #toc li {
+    margin-bottom: 1.2rem;
+  }
+  #toc button {
+    background: none;
+    border: none;
+    color: #7ecfff;
+    font-size: 1.1rem;
+    text-align: left;
+    width: 100%;
+    padding: 0;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.25s ease;
+    user-select: none;
+  }
+  #toc button:hover, #toc button:focus {
+    background-color: #004466;
+    outline: none;
+  }
+  #toc button.active {
+    color: #50e3c2;
+    font-weight: 700;
+    background-color: #003344;
+  }
+  /* Hauptinhalt */
+  #content {
+    flex: 1;
+    padding: 2rem 3rem;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: 3rem;
+    user-select: text;
+    height: 100vh;
+  }
+  #content-inner {
+    position: relative;
+    max-width: 100%;
+    height: 100%;
+    overflow: hidden;
+    padding-right: 15px;
+  }
+  /* Kapitelcontainer nur ein Kapitel sichtbar */
+  .chapter {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    padding-right: 10px;
+  }
+  .chapter.active {
+    display: flex;
+  }
+  /* Bausteine mit Einblendeanimation */
+  .build-element {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    margin-bottom: 2.5rem;
+    max-width: 100%;
+    visibility: hidden;
+    text-align: left !important; /* Linksbuendig */
+  }
+  .build-element.visible {
+    opacity: 1;
+    transform: none;
+    visibility: visible;
+  }
+  /* Textelemente */
+  .build-text.chapter-heading h2 {
+    margin-top: 0;
+    font-weight: 900;
+    font-size: 2.5rem;
+    color: #50e3c2;
+    user-select: text;
+    text-align: left;
+    margin-bottom: 0.6rem;
+  }
+  .build-text.chapter-comment p {
+    color: #a8d9d3;
+    font-size: 1.2rem;
+    font-style: italic;
+    text-align: left;
+    margin-top: 0;
+    user-select: text;
+    max-width: 75%;
+    margin-left: 0;
+    margin-bottom: 2rem;
+  }
+  .build-text.normal h2 {
+    margin-top: 0;
+    font-weight: 700;
+    font-size: 2rem;
+    color: #50e3c2;
+    user-select: text;
+    text-align: left;
+  }
+  .build-text.normal p {
+    line-height: 1.6;
+    font-size: 1.1rem;
+    color: #ddd;
+    user-select: text;
+    max-width: 660px;
+    margin-bottom: 1.3rem;
+    text-align: left;
+    margin-left: 0;
+  }
+  /* Tooltip */
+  .tooltip-word {
+    color: #7ecfff;
+    cursor: help;
+    border-bottom: 1.5px dashed #7ecfff;
+    position: relative;
+    user-select: text;
+  }
+  .tooltip-word:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #004466;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 10px rgb(0 0 0 / 0.5);
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    z-index: 15;
+  }
+  .tooltip-word::after {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: transparent;
+    padding: 0;
+    border-radius: 0;
+    font-size: 0;
+    white-space: nowrap;
+    box-shadow: none;
+    z-index: 0;
+  }
+  /* Grafik */
+  .build-graphic {
+    width: 100%;
+    max-width: 900px;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow:
+      0 15px 30px rgba(80, 227, 194, 0.3),
+      inset 0 0 50px rgba(80, 227, 194, 0.15);
+    user-select: none;
+    margin-bottom: 2.5rem;
+    text-align: left !important;
+  }
+  .build-graphic img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: opacity 0.3s ease;
+  }
+  /* Tabelle Kapitel 4 */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    color: #ddd;
+    font-size: 1.1rem;
+    table-layout: fixed;
+  }
+  th, td {
+    border: 1px solid #50e3c2;
+    padding: 0.7rem 1rem;
+    text-align: left;
+    word-wrap: break-word;
+  }
+  th {
+    background-color: #007f7f;
+  }
+  tr:nth-child(even) {
+    background-color: #003333;
+  }
+  /* Popup Kapitel 5 mit sanftem Einfliegen */
+  #popup-notification {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    background-color: #50e3c2;
+    color: #000;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 15px rgba(80, 227, 194, 0.6);
+    font-weight: 700;
+    font-size: 1.1rem;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(120%);
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 9999;
+    max-width: 300px;
+    will-change: transform, opacity;
+  }
+  #popup-notification.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+  }
+  /* Responsive für Smartphones */
+  @media (max-width: 900px) {
+    #app {
+      flex-direction: column;
+      height: 100vh;
+    }
+    #sidebar {
+      flex: none;
+      min-width: 100%;
+      max-height: 130px;
+      border-right: none;
+      border-bottom: 2px solid #222;
+      padding: 1rem;
+      overflow-x: auto;
+      overflow-y: hidden;
+      flex-direction: row;
+      align-items: center;
+      gap: 1rem;
+    }
+    #sidebar h2 {
+      flex: 0 0 auto;
+      margin: 0;
+      font-size: 1.4rem;
+      border-bottom: none;
+      white-space: nowrap;
+    }
+    #toc {
+      display: flex;
+      flex-grow: 1;
+      gap: 1rem;
+      overflow-x: auto;
+      margin: 0;
+      scrollbar-width: thin;
+      -webkit-overflow-scrolling: touch;
+    }
+    #toc li {
+      margin: 0;
+      list-style: none;
+      flex: 0 0 auto;
+    }
+    #toc button {
+      font-size: 1rem;
+      white-space: nowrap;
+    }
+    #content {
+      padding: 1rem 1.5rem 2rem;
+      margin: 0;
+      max-width: 100%;
+      height: calc(100vh - 130px);
+      overflow-y: auto;
+    }
+    #content-inner {
+      height: 100%;
+      overflow-y: visible;
+      padding-right: 0;
+    }
+    .chapter {
+      display: block !important;
+      height: auto !important;
+      overflow-y: visible !important;
+      padding-right: 0;
+    }
+    .build-element {
+      opacity: 1 !important;
+      transform: none !important;
+      visibility: visible !important;
+      margin-bottom: 1.5rem;
+    }
+    .build-graphic {
+      max-width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: none !important;
+      text-align: left !important;
+    }
+    .build-graphic img {
+      border-radius: 14px;
+    }
+    .build-text.normal p,
+    .build-text.normal h2 {
+      max-width: 100%;
+      text-align: left !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div id="app" role="main" aria-label="Scroll-Webseite Kapitel 1-7">
+
+  <nav id="sidebar" aria-label="Inhaltsverzeichnis">
+    <h2>Inhalt</h2>
+    <ul id="toc" role="list"></ul>
+  </nav>
+
+  <section id="content" aria-live="polite" aria-atomic="false" tabindex="0">
+    <div id="content-inner" role="region" aria-live="polite" aria-atomic="false" tabindex="0"></div>
+  </section>
+
+  <div id="popup-notification" role="alert" aria-live="assertive" aria-atomic="true" hidden></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+(function(){
+  const chapters = [
+    {
+      id:"kapitel1",
+      title:"Kapitel 1: Erste Schritte",
+      elements:[
+        {type:"text",headline:"Willkommen!",paragraphs:[
+          'Eine <span class="tooltip-word" data-tooltip="Der Anfang einer spannenden Reise">Einführung</span> in unsere innovative Webseite.'
+        ]},
+        {type:"text",headline:"Kommentar",paragraphs:["Diese Seite zeigt Inhalte beim Scrollen schrittweise an."]},
+        {type:"text",headline:"Übersicht",paragraphs:["Jedes Kapitel hat eine Überschrift und mindestens 5 Elemente."]},
+        {type:"text",headline:"Technologie",paragraphs:["CSS, HTML und JavaScript sorgen hier für das besondere Erlebnis."]},
+        {type:"graphic",alt:"Kapitel 1 Grafik",src:"https://via.placeholder.com/900x400/2a2a2a/50e3c2?text=Kapitel+1+Grafik"}
+      ]
+    },
+    {
+      id:"kapitel2",
+      title:"Kapitel 2: Grafik-Checkbox-System",
+      elements:[
+        {type:"text",headline:"Checkbox-System",paragraphs:["Die Grafik ändert sich je nach Auswahl der Checkboxen C1, C2 und C3."]},
+        {type:"text",headline:"Kommentar",paragraphs:["Pro Kombination gibt es eine eigene Grafik – insgesamt 8 Versionen."]},
+        {
+          type:"checkbox-graphic",
+          alt:"Checkbox-gesteuerte Grafik",
+          graphics:{
+            "000":{src:"https://via.placeholder.com/900x400/660000/ffffff?text=Grafik+C0",alt:"Grafik ohne Checkboxen"},
+            "100":{src:"https://via.placeholder.com/900x400/006600/ffffff?text=Grafik+C1",alt:"Grafik mit C1 ausgewählt"},
+            "010":{src:"https://via.placeholder.com/900x400/000066/ffffff?text=Grafik+C2",alt:"Grafik mit C2 ausgewählt"},
+            "001":{src:"https://via.placeholder.com/900x400/666600/000000?text=Grafik+C3",alt:"Grafik mit C3 ausgewählt"},
+            "110":{src:"https://via.placeholder.com/900x400/006666/ffffff?text=Grafik+C1+C2",alt:"Grafik mit C1 und C2"},
+            "101":{src:"https://via.placeholder.com/900x400/660066/ffffff?text=Grafik+C1+C3",alt:"Grafik mit C1 und C3"},
+            "011":{src:"https://via.placeholder.com/900x400/666666/ffffff?text=Grafik+C2+C3",alt:"Grafik mit C2 und C3"},
+            "111":{src:"https://via.placeholder.com/900x400/000000/50e3c2?text=Grafik+C1+C2+C3",alt:"Grafik mit C1, C2 und C3"}
+          }
+        },
+        {type:"text",headline:"Funktionsweise",paragraphs:["Checkboxen erlauben einfache Auswahl und direkte visuelle Rückmeldung."]},
+        {type:"text",headline:"Interaktivität",paragraphs:["Tooltip-Wörter bieten Erklärungen zu Fachbegriffen."]}
+      ]
+    },
+    {
+      id:"kapitel3",
+      title:"Kapitel 3: Vertiefung",
+      elements:[
+        {type:"text",headline:"Besonderheiten",paragraphs:["Die schrittweise Darstellung steigert die Aufmerksamkeit."]},
+        {type:"text",headline:"Kommentar",paragraphs:["Jeder Baustein ist klar und verständlich positioniert."]},
+        {type:"text",headline:"Design",paragraphs:["Kontrastreiches Farbschema mit Schwarz und Cyan."]},
+        {type:"graphic",alt:"Kapitel 3 Grafik",src:"https://via.placeholder.com/900x400/335544/50e3c2?text=Kapitel+3+Grafik"},
+        {type:"text",headline:"Navigation",paragraphs:["Linkes Inhaltsverzeichnis für schnellen Zugriff."]}
+      ]
+    },
+    {
+      id:"kapitel4",
+      title:"Kapitel 4: Highlights",
+      elements:[
+        {type:"text",headline:"Funktionen",paragraphs:["Animationen und Interaktivität werden kombiniert."]},
+        {type:"text",headline:"Kommentar",paragraphs:["Strukturierte Tabelle mit festen, unveränderlichen Daten."]},
+        {type:"table",headline:"Beispiel-Tabelle",tableData:{
+          headers:["Name","Funktion","Erfahrung"],
+          rows:[
+            ["Anna","Entwicklerin","5 Jahre"],
+            ["Ben","Designer","3 Jahre"],
+            ["Clara","Projektmanagerin","7 Jahre"],
+            ["David","Tester","2 Jahre"],
+            ["Eva","Support","4 Jahre"]
+          ]
+        }},
+        {type:"text",headline:"Präsentation",paragraphs:["Die Tabelle ist fest im DOM und wird nicht bei jedem Scroll neu geladen."]},
+        {type:"text",headline:"Erlebnis",paragraphs:["Die Seite bleibt flüssig ohne Flackern der Tabellen."]}
+      ]
+    },
+    {
+      id:"kapitel5",
+      title:"Kapitel 5: Zusammenfassung",
+      elements:[
+        {type:"text",headline:"Wichtigste Erkenntnisse",paragraphs:["Das gestaffelte Scrollen sorgt für klare Struktur."]},
+        {type:"text",headline:"Kommentar",paragraphs:["Popup-Notifications verbessern die Nutzerinteraktion."]},
+        {type:"graphic",alt:"Kapitel 5 Grafik",src:"https://via.placeholder.com/900x400/224455/50e3c2?text=Kapitel+5+Grafik"},
+        {type:"notification",headline:"Hinweis",message:"Dieses Popup erscheint kurz und verschwindet automatisch wie bei Messenger-Nachrichten."},
+        {type:"text",headline:"Fazit",paragraphs:["Tooltips bieten ergänzende Informationen elegant."]}
+      ]
+    },
+    {
+      id:"kapitel6",
+      title:"Kapitel 6: Ausblick",
+      elements:[
+        {type:"text",headline:"Zukunft",paragraphs:["Moderne Webtechniken ermöglichen innovative Präsentationen."]},
+        {type:"text",headline:"Kommentar",paragraphs:["Die vorgestellten Techniken sind vielseitig einsetzbar."]},
+        {type:"graphic",alt:"Kapitel 6 Grafik",src:"https://via.placeholder.com/900x400/443322/7ecfff?text=Kapitel+6+Grafik"},
+        {type:"text",headline:"Abschluss",paragraphs:["Vielen Dank für Ihre Aufmerksamkeit!"]},
+        {type:"text",headline:"Auf Wiedersehen",paragraphs:["Wir freuen uns auf Ihr Feedback."]}
+      ]
+    },
+    {
+      id:"kapitel7",
+      title:"Kapitel 7: Interaktives Diagramm",
+      elements:[
+        {type:"text",headline:"Interaktive Datenvisualisierung",paragraphs:["Hier zeigen wir ein komplexes, interaktives Diagramm mit Chart.js."]},
+        {type:"text",headline:"Beschreibung",paragraphs:["Das Diagramm zeigt verschiedene Kategorien mit unterschiedlichen Werten über Monate."]},
+        {type:"chart",chartId:"chart-example",chartType:"bar"},
+        {type:"text",headline:"Bedienung",paragraphs:["Benutzen Sie die Legende, um Datensätze ein- oder auszublenden."]},
+        {type:"text",headline:"Fazit",paragraphs:["Interaktive Diagramme bereichern Ihre Präsentation und helfen bei der Analyse."]}
+      ]
+    }
+  ];
+
+  const tocContainer = document.getElementById('toc');
+  const contentInner = document.getElementById('content-inner');
+  const popupNotification = document.getElementById('popup-notification');
+  const chapterContainers = [];
+  const chapterElementCounts = chapters.map(c => c.elements.length);
+  let popupTimerId = null;
+  let currentChapterIndex = 0;
+  let currentElementIndex = -1;
+  let chart7Instance = null;
+
+  // Inhaltsverzeichnis aufbauen
+  chapters.forEach((chapter, idx) => {
+    const li = document.createElement('li');
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = chapter.title;
+    btn.dataset.chapterIndex = idx;
+    btn.setAttribute('aria-controls', 'content-inner');
+    btn.addEventListener('click', () => {
+      showChapter(idx, chapterElementCounts[idx] - 1);
+      setActiveTOC(idx);
+    });
+    li.appendChild(btn);
+    tocContainer.appendChild(li);
+  });
+
+  // Kapitel bauen (nur einmalig)
+  function buildChapters() {
+    chapters.forEach((chapter, chapterIndex) => {
+      const chapDiv = document.createElement('section');
+      chapDiv.classList.add('chapter');
+      chapDiv.id = chapter.id;
+      chapDiv.setAttribute('aria-label', chapter.title);
+      chapDiv.setAttribute('tabindex', '0');
+      contentInner.appendChild(chapDiv);
+
+      chapter.elements.forEach((elem, elemIndex) => {
+        let el;
+        const isHeading = elemIndex === 0;
+        const isComment = elem.type === 'text' && elemIndex === 1;
+
+        switch(elem.type) {
+          case "text":
+            el = document.createElement('article');
+            el.classList.add('build-element', 'build-text');
+            if(isHeading) el.classList.add('chapter-heading');
+            else if(isComment) el.classList.add('chapter-comment');
+            else el.classList.add('normal');
+            if(elem.headline) {
+              const h2 = document.createElement('h2');
+              h2.innerHTML = elem.headline;
+              el.appendChild(h2);
+            }
+            elem.paragraphs.forEach(ptext => {
+              const p = document.createElement('p');
+              p.innerHTML = ptext;
+              el.appendChild(p);
+            });
+            break;
+
+          case "graphic":
+            el = document.createElement('div');
+            el.className = "build-element build-graphic";
+            const img = document.createElement('img');
+            img.src = elem.src;
+            img.alt = elem.alt || 'Grafik';
+            img.loading = 'lazy';
+            el.appendChild(img);
+            break;
+
+          case "checkbox-graphic":
+            el = document.createElement('div');
+            el.className = 'build-element build-graphic';
+            const cbImg = document.createElement('img');
+            cbImg.alt = elem.alt || 'Checkbox gesteuerte Grafik';
+            cbImg.loading = 'lazy';
+            cbImg.style.opacity = '1';
+            el.appendChild(cbImg);
+
+            const checkboxContainer = document.createElement('div');
+            checkboxContainer.id = `checkbox-graphic-controller-${chapterIndex}`;
+
+            ['C1','C2','C3'].forEach(cbName => {
+              const label = document.createElement('label');
+              const checkbox = document.createElement('input');
+              checkbox.type = 'checkbox';
+              checkbox.id = `checkbox-${cbName}-${chapterIndex}`;
+              label.htmlFor = checkbox.id;
+              label.textContent = cbName;
+              label.prepend(checkbox);
+              checkboxContainer.appendChild(label);
+            });
+            el.appendChild(checkboxContainer);
+
+            function getCheckboxKey() {
+              return ['C1','C2','C3'].map(cb => {
+                const el = document.getElementById(`checkbox-${cb}-${chapterIndex}`);
+                return el && el.checked ? '1' : '0';
+              }).join('');
+            }
+            function updateCheckboxGraphic() {
+              const key = getCheckboxKey();
+              const data = elem.graphics[key] || elem.graphics['000'];
+              if(cbImg.src !== data.src) {
+                cbImg.style.opacity = 0;
+                setTimeout(() => {
+                  cbImg.src = data.src;
+                  cbImg.alt = data.alt;
+                  cbImg.style.opacity = 1;
+                }, 250);
+              }
+            }
+            setTimeout(() => {
+              ['C1','C2','C3'].forEach(cb => {
+                const checkboxEl = document.getElementById(`checkbox-${cb}-${chapterIndex}`);
+                if(checkboxEl) {
+                  checkboxEl.addEventListener('change', updateCheckboxGraphic);
+                }
+              });
+              updateCheckboxGraphic();
+            }, 0);
+            break;
+
+          case "table":
+            el = document.createElement('div');
+            el.className = 'build-element build-text';
+            if(elem.headline) {
+              const h2 = document.createElement('h2');
+              h2.textContent = elem.headline;
+              el.appendChild(h2);
+            }
+            const table = document.createElement('table');
+            const thead = document.createElement('thead');
+            const trHead = document.createElement('tr');
+            elem.tableData.headers.forEach(header => {
+              const th = document.createElement('th');
+              th.textContent = header;
+              trHead.appendChild(th);
+            });
+            thead.appendChild(trHead);
+            table.appendChild(thead);
+            const tbody = document.createElement('tbody');
+            elem.tableData.rows.forEach(row => {
+              const tr = document.createElement('tr');
+              row.forEach(cell => {
+                const td = document.createElement('td');
+                td.textContent = cell;
+                tr.appendChild(td);
+              });
+              tbody.appendChild(tr);
+            });
+            table.appendChild(tbody);
+            el.appendChild(table);
+            break;
+
+          case "notification":
+            el = null;
+            break;
+
+          case "chart":
+            el = document.createElement('div');
+            el.className = 'build-element build-graphic';
+            const canvas = document.createElement('canvas');
+            canvas.id = elem.chartId || `chart-${chapterIndex}-${elemIndex}`;
+            el.appendChild(canvas);
+            break;
+
+          default:
+            el = null;
+        }
+        if(el) chapDiv.appendChild(el);
+      });
+      chapterContainers.push(chapDiv);
+    });
+  }
+
+  function setActiveTOC(chapterIndex) {
+    tocContainer.querySelectorAll('button').forEach((btn,i) => {
+      btn.classList.toggle('active', i === chapterIndex);
+    });
+  }
+
+  function showChapter(chapterIndex, elementIdx) {
+    if(chapterIndex < 0) chapterIndex = 0;
+    if(chapterIndex >= chapters.length) chapterIndex = chapters.length - 1;
+
+    chapterContainers.forEach((chap,i) => {
+      if(i === chapterIndex) chap.classList.add('active');
+      else {
+        chap.classList.remove('active');
+        chap.querySelectorAll('.build-element').forEach(el => el.classList.remove('visible'));
+      }
+    });
+
+    currentChapterIndex = chapterIndex;
+    elementIdx = Math.max(elementIdx, 1);
+    elementIdx = Math.min(elementIdx, chapterElementCounts[chapterIndex] - 1);
+    currentElementIndex = elementIdx;
+
+    const elems = chapterContainers[chapterIndex].querySelectorAll('.build-element');
+    elems.forEach((el,i) => {
+      if(i <= currentElementIndex) el.classList.add('visible');
+      else el.classList.remove('visible');
+    });
+
+    setActiveTOC(chapterIndex);
+    chapterContainers[chapterIndex].focus();
+    chapterContainers[chapterIndex].scrollTop = 0;
+
+    // Popup Kapitel 5 einblenden mit Animation
+    if(chapterIndex === 4) {
+      const notif = chapters[chapterIndex].elements.find(e => e.type === 'notification');
+      if(notif) showPopup(notif.message);
+    } else {
+      hidePopup();
+    }
+
+    // Chart rendern nur einmal Kapitel 7 (Index 6)
+    if(chapterIndex === 6 && !chart7Instance) {
+      renderChart7();
+    }
+  }
+
+  let wheelCooldown = false;
+  const WHEEL_COOLDOWN_TIME = 250;
+  function onWheelScroll(e) {
+    e.preventDefault();
+    if(wheelCooldown) return;
+    wheelCooldown = true;
+    setTimeout(() => wheelCooldown = false, WHEEL_COOLDOWN_TIME);
+
+    const delta = e.deltaY;
+    const maxIndex = chapterElementCounts[currentChapterIndex] - 1;
+
+    if(delta > 20) {
+      if(currentElementIndex < maxIndex) {
+        showChapter(currentChapterIndex, currentElementIndex + 1);
+      } else if(currentChapterIndex < chapters.length - 1) {
+        showChapter(currentChapterIndex + 1, 1);
+      }
+    } else if(delta < -20) {
+      if(currentElementIndex > 1) {
+        showChapter(currentChapterIndex, currentElementIndex - 1);
+      } else if(currentChapterIndex > 0) {
+        const prevMax = chapterElementCounts[currentChapterIndex - 1] - 1;
+        showChapter(currentChapterIndex - 1, prevMax);
+      }
+    }
+  }
+  contentInner.addEventListener('wheel', onWheelScroll, { passive:false });
+
+  // Touch-Support
+  let touchStartY = null;
+  contentInner.addEventListener('touchstart', e=>{
+    if(e.touches.length === 1) touchStartY = e.touches[0].clientY;
+  }, {passive:true});
+  contentInner.addEventListener('touchend', e=>{
+    if(touchStartY === null) return;
+    const touchEndY = e.changedTouches[0].clientY;
+    if(touchEndY === undefined) return;
+    const diff = touchStartY - touchEndY;
+    touchStartY = null;
+    if(Math.abs(diff) > 50) {
+      if(diff > 0) {
+        const maxIndex = chapterElementCounts[currentChapterIndex] - 1;
+        if(currentElementIndex < maxIndex) {
+          showChapter(currentChapterIndex, currentElementIndex + 1);
+        } else if(currentChapterIndex < chapters.length - 1) {
+          showChapter(currentChapterIndex + 1, 1);
+        }
+      } else {
+        if(currentElementIndex > 1) {
+          showChapter(currentChapterIndex, currentElementIndex - 1);
+        } else if(currentChapterIndex > 0) {
+          const prevMax = chapterElementCounts[currentChapterIndex - 1] - 1;
+          showChapter(currentChapterIndex - 1, prevMax);
+        }
+      }
+    }
+  }, {passive:true});
+
+  // Popup Animation mit Einflug
+  function showPopup(message) {
+    if(popupTimerId) {
+      clearTimeout(popupTimerId);
+      popupTimerId = null;
+    }
+    popupNotification.textContent = message;
+    popupNotification.hidden = false;
+    popupNotification.classList.add('visible');
+    popupTimerId = setTimeout(() => {
+      hidePopup();
+    }, 5000);
+  }
+  function hidePopup() {
+    popupNotification.classList.remove('visible');
+    popupTimerId = setTimeout(() => {
+      popupNotification.hidden = true;
+    }, 600);
+  }
+
+  // Chart.js für Kapitel 7
+  function renderChart7() {
+    const canvas = document.getElementById('chart-example');
+    if(!canvas) return;
+    if(chart7Instance){
+      chart7Instance.destroy();
+      chart7Instance = null;
+    }
+    const labels = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+    const datasets = [
+      {
+        label: 'Produkt Alpha',
+        backgroundColor: 'rgba(80, 227, 194, 0.7)',
+        borderColor: 'rgba(80, 227, 194, 1)',
+        borderWidth: 1,
+        data: [4200, 4800, 5100, 5300, 6000, 6200, 6100, 6300, 6200, 6000, 5900, 6100]
+      },
+      {
+        label: 'Produkt Beta',
+        backgroundColor: 'rgba(126, 207, 255, 0.7)',
+        borderColor: 'rgba(126, 207, 255, 1)',
+        borderWidth: 1,
+        data: [3500, 3700, 4000, 4300, 4500, 4700, 4800, 5000, 4900, 4700, 4600, 4800]
+      },
+      {
+        label: 'Produkt Gamma',
+        backgroundColor: 'rgba(255, 179, 128, 0.7)',
+        borderColor: 'rgba(255, 179, 128, 1)',
+        borderWidth: 1,
+        data: [2900, 3000, 3200, 3400, 3600, 3700, 3700, 3800, 3700, 3600, 3500, 3600]
+      }
+    ];
+    chart7Instance = new Chart(canvas.getContext('2d'), {
+      type: 'bar',
+      data: { labels, datasets },
+      options: {
+        responsive: true,
+        interaction: { mode: 'nearest', axis: 'x', intersect: false },
+        plugins: {
+          legend: { position: 'top', labels: { color: '#50e3c2', font: { size: 14 }, usePointStyle:true } },
+          tooltip: {
+            enabled: true,
+            backgroundColor: '#004466',
+            titleColor: '#50e3c2',
+            bodyColor: '#ddd',
+            displayColors: false
+          }
+        },
+        scales: {
+          x: { ticks: { color: '#7ecfff', font: { size: 12 } }, grid: { color: '#002233' } },
+          y: { beginAtZero: true, ticks: { color: '#7ecfff', font: { size: 12 }, stepSize: 1000 }, grid: { color: '#002233' } }
+        }
+      }
+    });
+  }
+
+  buildChapters();
+  showChapter(0,1);
+})();
+</script>
+
+</body>
+</html>

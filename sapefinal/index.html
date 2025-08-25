@@ -4,33 +4,129 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>SAPE - Data Storytelling</title>
+
 <style>
-  body {margin:0; background:#000; color:#fff; font-family:sans-serif;}
-  #app {display:flex; height:100vh;}
-  #sidebar {width:220px; background:#111; padding:1em; overflow-y:auto;}
-  #toc button {background:none; border:none; color:#9cc2f4; display:block; width:100%; text-align:left; margin-bottom:0.5em; cursor:pointer;}
-  #toc button:hover {background:#003355;}
-  #toc button.active {background:#002244; font-weight:bold;}
-  #content {flex:1; padding:2em; overflow:hidden;}
-  .chapter {display:none; flex-direction:column; height:100%; overflow-y:auto;}
-  .chapter.active {display:flex;}
-  .build-element {opacity:0; transform:translateY(20px); transition:all 0.3s; margin-bottom:1.5em;}
-  .build-element.visible {opacity:1; transform:none;}
-  .build-text h2 {font-size:1.6rem; color:#9cc2f4;}
-  .build-text p {font-size:1.1rem; line-height:1.6;}
-  p.subtitle {font-size:1.3rem; color:#9cc2f4; font-weight:bold;}
-  .superscript {font-size:0.8rem; vertical-align:super; cursor:pointer; color:#9cc2f4;}
-  .superscript:hover {text-decoration:underline;}
-  .tooltip {
-    border-bottom: 1px dotted #9cc2f4;
-    color: #9cc2f4;
-    cursor: help;
-    position: relative;
-  }
-  .tooltip::after {
+
+/* ---------------- Basis ---------------- */
+body {
+  margin: 0;
+  background: #000;
+  color: #fff;
+  font-family: sans-serif;
+  overflow-y: auto; /* scroll erlauben */
+}
+
+
+#app {
+  display: flex;
+  min-height: 100vh; /* mindestens die Höhe des Viewports */
+  flex-direction: row;
+}
+
+/* Sidebar fixieren und unabhängig scrollen */
+#sidebar {
+  width: 220px;
+  background: #111;
+  padding: 1em;
+  position: sticky;      /* sticky statt normal */
+  top: 0;                /* bleibt oben beim Scrollen */
+  height: 100vh;         /* volle Höhe */
+  overflow-y: auto;      /* nur die Sidebar scrollt intern */
+}
+
+/* Optional: Scrollbar in der Sidebar sichtbar */
+#sidebar::-webkit-scrollbar { width: 6px; }
+#sidebar::-webkit-scrollbar-thumb { background: #555; border-radius: 3px; }
+#sidebar::-webkit-scrollbar-track { background: #111; }
+
+#toc button {
+  background: none;
+  border: none;
+  color: #9cc2f4;
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin-bottom: 0.5em;
+  cursor: pointer;
+}
+#toc button:hover { background:#003355; }
+#toc button.active { background:#002244; font-weight:bold; }
+
+/* ---------------- Content ---------------- */
+#content {
+  flex: 1;
+  padding: 2em;
+  display: block;
+  overflow: visible; /* okay */
+}
+
+
+/* Scrollbar komplett ausblenden */
+#content::-webkit-scrollbar { display: none; }
+#content { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ---------------- Kapitel ---------------- */
+.chapter {
+  display: none; /* standardmäßig unsichtbar */
+}
+
+.chapter.active {
+  display: block; /* nur das aktive Kapitel sichtbar */
+}
+
+
+
+
+/* ---------------- Build Elemente ---------------- */
+.build-element {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s;
+  margin-bottom: 0.5em;
+}
+.build-element.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------------- Text / Überschriften ---------------- */
+.build-text h2, .build-text h3, .build-text h4 {
+  margin: 0.2rem 0 0.3rem 0;
+  font-weight: normal;
+  text-decoration: none;
+  line-height: 1.35;
+  color: #9cc2f4;
+}
+.build-text p { font-size: 1.1rem; line-height: 1.6; }
+
+p.subtitle {
+  font-size: 1.3rem;
+  color: #9cc2f4;
+  font-weight: bold;
+}
+.subtitle.tight { margin-bottom:0.1em; }
+.subtitle.tight + p { margin-top:0; }
+
+/* Superscripts, Tooltips, Info-boxen, QA etc. bleiben wie zuvor */
+
+
+.superscript {
+  font-size: 0.8rem;
+  vertical-align: super;
+  cursor: pointer;
+  color: #9cc2f4;
+}
+.superscript:hover { text-decoration: underline; }
+
+.tooltip {
+  border-bottom: 1px dotted #9cc2f4;
+  cursor: help;
+  position: relative;
+}
+.tooltip::after {
   content: attr(data-tooltip);
   position: absolute;
-  top: 125%; /* Tooltip UNTER dem Element */
+  top: 125%;
   left: 50%;
   transform: translateX(-50%);
   background: rgba(0,0,0,0.85);
@@ -48,9 +144,12 @@
   transition: all 0.2s ease;
   z-index: 10;
 }
+.tooltip:hover::after { opacity: 1; transform: translateY(0); }
+
+/* ---------------- Info-Box ---------------- */
 .info-box {
-  background: #4a87ba;          /* Headline-Farbe */
-  color: #fff;                  /* weiße Schrift */
+  background: #4a87ba;
+  color: #fff;
   padding: 1.2em 1.5em;
   border-radius: 1.2em;
   margin: 1.5em 0;
@@ -58,44 +157,12 @@
   line-height: 1.6;
   box-shadow: 0 0 0 4px rgba(156, 194, 244, 0.4);
 }
-.info-box strong {
-  font-weight: 600;
-  color: #fff;                  /* auch fett weiß */
-}
+.info-box strong { font-weight: 600; color: #fff; }
+.info-box .superscript { color: #fff; }
 
-
-
-
-  .tooltip:hover::after {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  #notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: #9cc2f4;
-    color: #000;
-    padding: 0.8em 1.2em;
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    font-size: 1rem;
-    opacity: 0;
-    transform: translateY(-20px);
-    transition: all 0.4s ease;
-    pointer-events: none;
-    z-index: 9999;
-  }
-  #notification.show {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .info-box .superscript {
-  color: #fff;
-}
-
+/* ---------------- Frage / Antwort ---------------- */
 .question-box {
-  background: #00bcd4; /* helleres Blau für Frage */
+  background: #00bcd4;
   color: #000;
   padding: 1em 1.2em;
   border-radius: 0.5em;
@@ -105,51 +172,75 @@
   gap: 1em;
   margin: 1.5em 0;
 }
-
-.question-box img {
-  width: 60px;
-  height: auto;
-}
-
+.question-box img { width: 60px; height: auto; }
 .answer-box {
-  background: #9cc2f4; /* dein Standard-Blau */
+  background: #9cc2f4;
   color: #000;
   padding: 1em 1.2em;
   border-radius: 0.5em;
   margin-bottom: 1.5em;
 }
 
-p.underlined-subtitle {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: #9cc2f4;
-  margin-top: 1em;
-  border-bottom: 2px solid #9cc2f4;
-  display: inline-block;
-  padding-bottom: 0.2em;
+/* ---------------- Notifications ---------------- */
+
+#notification {
+  position: fixed;
+  right: 20px;
+  top: 20px;
+  background: #9cc2f4;
+  color: #000;
+  padding: 0.8rem 1rem;
+  border-radius: 0.6rem;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.25s ease;
+  pointer-events: none;
+  z-index: 9999;
 }
+#notification.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+
+.chapter-notification {
+  background-color: #f0f8ff;
+  border-left: 4px solid #007acc;
+  padding: 10px 15px;
+  margin: 20px 0;
+  font-style: italic;
+  border-radius: 5px;
+}
+
+
+
+/* ---------------- Grafiken ---------------- */
+.graphic-block {
+  margin: 1.5em 0;
+  text-align: center;
+}
+
+.graphic-block h3 { margin-top:0; font-size:1.3rem; font-weight:600; color:#9cc2f4; }
 
 .paragraph-with-icon {
   display: flex;
-  align-items: flex-start;
-  gap: 1em;
-  margin: 1em 0;
+  align-items: flex-start; /* vertikale Ausrichtung oben */
+  gap: 1rem; /* Abstand zwischen Text und Icon */
+  margin: 1.5em 0;
 }
 
 .paragraph-with-icon p {
-  margin: 0;
-  line-height: 1.6;
+  flex: 1; /* Text nimmt den verbleibenden Platz ein */
+  margin: 0; /* unnötige Abstände entfernen */
 }
 
 .paragraph-with-icon img {
-  width: 40px;
+  width: 50px; /* Icon-Größe, ggf. anpassen */
   height: auto;
+  flex-shrink: 0; /* Icon schrumpft nicht */
+  align-self: flex-start; /* oben ausrichten */
 }
-
-.underlined {
-  text-decoration: underline;
-}
-
 
 .image-row-split {
   display: flex;
@@ -173,126 +264,93 @@ p.underlined-subtitle {
   font-size: 1.2rem;
 }
 
+/* ---------------- Mobile ---------------- */
+@media(max-width:800px){
+  #app { flex-direction: column; }
+  #sidebar { width:100%; display:flex; overflow-x:auto; padding:0.5em 1em; border-bottom:2px solid #222; }
+  #toc { display:flex; flex-wrap:nowrap; gap:0.5em; }
+  #toc li { margin:0; }
+  #toc button { font-size:0.9rem; white-space:nowrap; padding:0.3em 0.6em; border-radius:0.4em; }
+  #content { padding:1em; overflow-y: hidden; }
+  #kapitel7 { display:block !important; }
+  #kapitel7 article { margin-bottom:0.8rem !important; }
+  .graphic-block img { width:100% !important; max-width:100%; }
+  .question-box, .answer-box { flex-direction:column; align-items:flex-start; }
+  .question-box img { width:40px; }
+}
 
 
-.graphic-block {
+/* ---------------- Kapitel 7 ---------------- */
+#kapitel7 {
+  display: block; /* Container selbst kein Grid mehr */
+  padding: 1.5em 0;
+  overflow: visible; /* sicherstellen, dass nichts abgeschnitten wird */
+}
+
+#kapitel7 .grid-inner {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr; /* 2-spaltiges Layout */
+  grid-auto-rows: min-content;
+  gap: 1rem 2rem;
+  align-items: start;
+}
+
+/* Einzelne Artikel */
+#kapitel7 article:nth-of-type(1) { grid-column: 1 / -1; } /* Überschrift über beide Spalten */
+#kapitel7 article:nth-of-type(2),
+#kapitel7 article:nth-of-type(3) { grid-column: 1; }
+#kapitel7 article:nth-of-type(4) { grid-column: 1; }
+#kapitel7 article:nth-of-type(5) { grid-column: 2; grid-row: 2 / span 4; align-self: start; }
+#kapitel7 article:nth-of-type(5) .graphic-block img {
+  width: 100%; /* Bild passt in Spalte */
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+#kapitel7 article:nth-of-type(6) { grid-column: 1 / -1; }
+#kapitel7 article:nth-of-type(6) .question-box,
+#kapitel7 article:nth-of-type(6) .answer-box {
+  width: 95%; /* volle Breite im Grid */
+  margin: 0.8rem 0;
+}
+
+/* Frage/Antwort Boxen */
+#kapitel7 .question-box,
+#kapitel7 .answer-box {
+  display: flex;
+  flex-direction: column; /* Text über Bild, falls nötig */
+  align-items: flex-start;
+  padding: 1em 1.2em;
+  border-radius: 0.6em;
+  overflow: visible; /* sicherstellen, dass nichts abgeschnitten wird */
+}
+
+#kapitel7 .question-box img,
+#kapitel7 .answer-box img {
+  max-width: 40px;
+  height: auto;
+  margin-bottom: 0.5em;
+}
+
+/* Grafikblöcke */
+#kapitel7 .graphic-block {
   margin: 1.5em 0;
   text-align: center;
 }
 
-.graphic-block img {
-  max-width: 100%;
+#kapitel7 .graphic-block img {
+  width: 100%;
+  max-width: 520px; /* Limit für Desktop, mobil kleiner */
   height: auto;
-  border-radius: 0.5em;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  display: inline-block;
 }
 
-.graphic-block h3 {
-  margin-top: 0;
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: #9cc2f4;
-}
 
-/* Mobile Optimierung */
-@media (max-width: 800px) {
-  #app {
-    flex-direction: column;
-  }
-
-  #sidebar {
-    width: 100%;
-    display: flex;
-    overflow-x: auto;
-    padding: 0.5em 1em;
-    border-bottom: 2px solid #222;
-  }
-
-  #sidebar h2 {
-    display: none; /* optional: Überschrift ausblenden */
-  }
-
-  #toc {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 0.5em;
-  }
-
-  #toc li {
-    margin: 0;
-  }
-
-  #toc button {
-    font-size: 0.9rem;
-    white-space: nowrap;
-    padding: 0.3em 0.6em;
-    border-radius: 0.4em;
-  }
-
-  #content {
-    padding: 1em;
-  }
-
-  .build-text h2 {
-    font-size: 1.4rem;
-  }
-
-  .build-text p {
-    font-size: 1rem;
-  }
-
-  table {
-    display: block;
-    width: 100%;
-    overflow-x: auto;
-  }
-
-  table thead,
-  table tbody,
-  table th,
-  table td,
-  table tr {
-    display: block;
-  }
-
-  table tr {
-    margin-bottom: 1em;
-  }
-
-  table td,
-  table th {
-    padding: 0.5em;
-    border: 1px solid #444;
-  }
-
-  .image-row-split {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .image-row-split img {
-    width: 80%;
-    margin-bottom: 1em;
-  }
-
-  .graphic-block img {
-    width: 100% !important;
-    max-width: 100%;
-  }
-
-  .question-box,
-  .answer-box {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .question-box img {
-    width: 40px;
-  }
-}
 
 
 </style>
+
+
 </head>
 <body>
 <div id="app">
@@ -308,18 +366,20 @@ p.underlined-subtitle {
 
 <script>
 // Kapitel
-const chapters = [
+const chapters =
+
+[
    {
     id: "kapitel1",
     title: "Kapitel 1: Einstellungen gegenüber Menschen mit Epilepsie – Japan und Deutschland im Vergleich",
     elements: [
       { type: "text", headline: "Einstellungen gegenüber Menschen mit Epilepsie – Japan und Deutschland im Vergleich",
-      paragraphs: ["## Eine datengeschichtliche Wiederaufbereitung einer Studie von Kerkhoff et al."] },
-      { type: "text", paragraphs: ["## Mit Hingabe erstellt von André Duwe, Emma Takács, Miriam Weis, Raphael Felgendreher und Sofia Sokol – für alle, die Daten nicht nur lesen, sondern erleben möchten."] },
-      { type: "text", paragraphs: ["## Achtung - Optimiert für Desktop-Clients mit einer Auflösung von 1920x1080p - mit Mobilgeräten nur bedingt nutzbar!"] },
+      paragraphs: ["## Eine datengeschichtliche Wiederaufbereitung der Studie „A cross-cultural comparative study of attitudes towards people with epilepsy in Japan and Germany“ von Kerkhoff et al."] },
+      { type: "text", paragraphs: ["#### Mit Hingabe erstellt von André Duwe, Emma Takács, Miriam Weis, Raphael Felgendreher und Sofia Sokol – für alle, die Daten nicht nur lesen, sondern erleben möchten."] },
+      { type: "text", paragraphs: ["#### Achtung - Optimiert für Desktop-Clients mit einer Auflösung von 1920x1080p - mit Mobilgeräten nur bedingt nutzbar!"] },
       { type: "text", paragraphs: ["**Vorurteile, Stigmatisierung, Exklusion – in allen Ländern der Welt berichten Menschen mit Epilepsie, regelmäßig Opfer dieser Probleme zu sein und psychisch darunter zu leiden. Selbst die Suche nach einer angemessenen Beschäftigung oder sogar das Eingehen einer Ehe fallen deswegen schwer. Aber wie entstehen diese Haltungen überhaupt – hat es etwas mit der Bildung, dem Alter oder gar mit der Kultur der vorurteilsbehafteten Personen zu tun?**"] },
-      { type: "text",paragraphs: ["Im Rahmen dieser Data-Story haben wir uns mit einer kulturvergleichenden Studie zwischen Deutschland und Japan über Einstellungen zu Personen mit Epilepsie beschäftigt, um den Einfluss der Kultur und sozialdemografischer Faktoren auf Ansichten gegenüber Epilepsiebetroffenen zu untersuchen.[1]"] },
-      { type: "text",paragraphs: ["Hierbei beziehen wir uns auf einzelne Skalen der SAPE und SAPE-J, sowie auf demografische Merkmale, Kenntnisse über Epilepsie und persönliche Erfahrungen der Versuchspersonen."] }
+      { type: "text",paragraphs: ["Im Rahmen dieser Data-Story haben wir uns mit einer kulturvergleichenden Studie zwischen {{Deutschland|erhoben im Jahr 2018}} und {{Japan|erhoben im Jahr 2024}} über Einstellungen zu Personen mit Epilepsie beschäftigt, um den Einfluss der Kultur und sozialdemografischer Faktoren auf Ansichten gegenüber Epilepsiebetroffenen zu untersuchen auf die Problematik der Stigmatisierung von Menschen mit Epilepsie aufmerksam zu machen.[1]"] },
+      { type: "text",paragraphs: ["Hierbei beziehen wir uns auf Fragebögen zu einzelnen Skalen der SAPE und SAPE-J (engl. Scales of the Attitudes towards People with Epilepsy, entwickelt von May et al., 2022)[2], sowie auf demografische Merkmale, Kenntnisse über Epilepsie und persönliche Erfahrungen der Versuchspersonen."] }
     ]
   },
   {
@@ -330,7 +390,7 @@ const chapters = [
       paragraphs: ["## Allgemeine Informationen"] },
        { type: "text", headline: "Was sind die SAPE und SAPE-J?",
       paragraphs: ["## Was sind die SAPE und SAPE-J?"] },
-      { type: "text", paragraphs: ["Die **SAPE** (engl. Scales of the Attitudes towards People with Epilepsy) sind Skalen mit sechs Bestandteilen, welche die **Einstellungen der untersuchten Personen gegenüber PWE** (Personen mit Epilepsie, engl. People with Epilepsy) messen und in dieser Studie mithilfe eines webbasierten {{Online-Fragebogens|In Deutschland teils webbasiert, teils mit persönlichen Interviews (face-to-face)}} erhoben wurden. Hierbei wird mit „SAPE“ die deutsche und mit „SAPE-J“ die japanische Version dieser Skalen bezeichnet, wobei die SAPE-J auf den SAPE basieren."] },
+      { type: "text", paragraphs: ["Der **SAPE-Fragebogen** misst die **Einstellungen gegenüber PWE** (Personen mit Epilepsie, engl. People with Epilepsy) mit **sechs Skalen** (validiert von May et al., 2022, Kuramochi et al., 2024)[3], die im Rahmen einer webbasierten  {{Online-Fragebogens|In Deutschland teils webbasiert, teils mit persönlichen Interviews (face-to-face)}} in dieser Studie erhoben wurden. Hierbei wird mit „SAPE“ die deutsche und mit „SAPE-J“ die japanische Version dieser Skalen bezeichnet, wobei die SAPE-J auf den SAPE basieren."] },
 
       ,
       {
@@ -349,7 +409,7 @@ const chapters = [
       <tbody>
         <tr>
           <td style="border:1px solid #444; padding:0.6em;">Soziale Distanz</td>
-          <td style="border:1px solid #444; padding:0.6em;">Intimität, die eine Person mit PWE zu haben wünscht oder duldet<span class="superscript" onclick="jumpToChapter(20)">²</span></td>
+          <td style="border:1px solid #444; padding:0.6em;">Intimität, die eine Person mit PWE zu haben wünscht oder duldet<span class="superscript" onclick="jumpToChapter(20)">⁴</span></td>
           <td style="border:1px solid #444; padding:0.6em;">
             <em>Würden Sie ein Zimmer an eine Person mit Epilepsie vermieten?</em><br/>
             <em>Würden Sie eine solche Person als Arbeitskollegen akzeptieren?</em>
@@ -357,7 +417,7 @@ const chapters = [
         </tr>
         <tr>
           <td style="border:1px solid #444; padding:0.6em;">Stereotypen</td>
-          <td style="border:1px solid #444; padding:0.6em;">Subjektive Annahmen oder Zuschreibungen über PWE<span class="superscript" onclick="jumpToChapter(20)">³</span></td>
+          <td style="border:1px solid #444; padding:0.6em;">Subjektive Annahmen oder Zuschreibungen über PWE<span class="superscript" onclick="jumpToChapter(20)">⁵</span></td>
           <td style="border:1px solid #444; padding:0.6em;">
             <em>PWE sind weniger intelligent als andere Menschen.</em>
           </td>
@@ -395,6 +455,8 @@ const chapters = [
     id:"kapitel3",
     title:"Kapitel 3: Über die sozialdemografischen Merkmale:",
     elements:[
+    { type: "text", headline: "Über die sozialdemografischen Merkmale",
+      paragraphs: ["## Über die sozialdemografischen Merkmale"] },
          {
   type: "html",
   headline: "Bestandteile der SAPE",
@@ -406,7 +468,7 @@ const chapters = [
         Soziodemografisches Merkmal
       </th>
       <th style="border: 1px solid #444; background: #336fb3; padding: 0.6em;">
-        erhobene Bestandteile
+        erhobene Items
       </th>
     </tr>
   </thead>
@@ -467,12 +529,14 @@ const chapters = [
   id: "kapitel4",
   title: "Kapitel 4: Herausforderungen",
   elements: [
+  { type: "text", headline: "Herausforderungen",
+      paragraphs: ["## Herausforderungen"] },
     {
       type: "html",
       headline: "Herausforderungen bei der Interpretation der Daten",
       html: `
         <div class="info-box">
-          Wie die Art der Datenerhebung bereits impliziert, wurden die hier dargestellten Daten durch einen <strong>Selbstbericht</strong> aggregiert. Das bedeutet, dass die SAPE erhoben wurden, indem die Befragten ihr Verhalten und ihre Ansichten gegenüber PWE<span class="superscript" onclick="jumpToChapter(20)">⁴</span> selbst geschildert haben. Bei der Interpretation der Daten aus einem Selbstbericht ist Vorsicht geboten: So kann das Phänomen der <strong>sozialen Erwünschtheit</strong> auftreten. Dies beschreibt die Tendenz der Befragten, <strong>nicht die für sie tatsächlich zutreffende Antwort</strong> zu geben, sondern diejenige, von der sie erwarten, dass sie sozial gebilligt oder erwünscht ist. <span class="superscript" onclick="jumpToChapter(20)">⁵</span><br><br>
+          Wie die Art der Datenerhebung bereits impliziert, wurden die hier dargestellten Daten durch einen <strong>Selbstbericht</strong> aggregiert. Das bedeutet, dass die SAPE erhoben wurden, indem die Befragten ihr Verhalten und ihre Ansichten gegenüber PWE<span class="superscript" onclick="jumpToChapter(20)">⁶</span> selbst geschildert haben. Bei der Interpretation der Daten aus einem Selbstbericht ist Vorsicht geboten: So kann das Phänomen der <strong>sozialen Erwünschtheit</strong> auftreten. Dies beschreibt die Tendenz der Befragten, <strong>nicht die für sie tatsächlich zutreffende Antwort</strong> zu geben, sondern diejenige, von der sie erwarten, dass sie sozial gebilligt oder erwünscht ist. <span class="superscript" onclick="jumpToChapter(20)">⁷</span><br><br>
           Jedoch ist dies nicht die einzige Herausforderung, die bei der Deutung der Daten auftreten könnte. Es ist nämlich <strong>nicht möglich</strong>, auf Grundlage der <strong>Untersuchung der Einstellungen auf ein spezifisches Verhalten bzw. bestimmte Umstände</strong> zu schließen, ohne <strong>alternative Erklärungen</strong> zu berücksichtigen. Beispielsweise kennen laut Studie Befragte aus Japan weniger PWE als Befragte aus Deutschland. Nun könnte der Eindruck entstehen, dass dies der Fall sei, da es weniger PWE in Japan als in Deutschland gebe. Allerdings wäre auch eine andere Interpretation möglich: So könnte die geringere Bekanntschaft auch dadurch erklärt werden, dass PWE in Japan ihre Erkrankung häufiger verschweigen als in Deutschland. Bis eindeutige Schlussfolgerungen gezogen werden können, ist es nötig, die Ergebnisse der Studie genau zu betrachten und gegebenenfalls die Zusammenhänge weiter zu untersuchen.
         </div>
       `
@@ -494,9 +558,12 @@ const chapters = [
   html: `
     <div class="graphic-block">
       <h3>Verteilung der demografischen Merkmale und Erfahrungen mit PWE</h3>
-      <img src="images/distriof_ohne.png" alt="Distribution Graph" style="width:50%; height:auto;">
+      <img src="images/distriof_ohne.png" alt="Distribution Graph" style="width:49%; height:auto;">
+      <img src="images/distriof_ohne2.png" alt="Distribution Graph" style="width:49%; height:auto;">
     </div>
+
   `
+
 }
 
 
@@ -510,11 +577,11 @@ const chapters = [
   elements: [
       { type: "text", headline: "Wie unterschiedlich sind nun die Einstellungen gegenüber PWE in Japan und Deutschland?",
       paragraphs: ["## Wie unterschiedlich sind nun die Einstellungen gegenüber PWE in Japan und Deutschland?"] },
-      { type: "text", paragraphs: ["## Soziale Distanz",
+      { type: "text", paragraphs: ["#### Soziale Distanz",
       "Die augenscheinlich deutlichsten Differenzen können im Bereich Soziale Distanz zu PWE beobachtet werden. Diese ist bei den japanischen Befragten signifikant höher als bei den Deutschen. Japaner:innen geben also beispielsweise seltener als Deutsche an, dass sie einer Person mit Epilepsie ein Zimmer vermieten oder sie als Nachbar:in akzeptieren würden."] },
-    { type: "text", paragraphs: ["## Besorgnis",
+
+    { type: "text", paragraphs: ["#### Besorgnis",
       "Die Besorgnis in Bezug auf PWE beziehungsweise ihr Verhalten ist unter den Befragten der japanischen Stichprobe ebenfalls höher. So berichteten die japanischen Teilnehmenden zum Beispiel signifikant häufiger, dass sie befürchten, PWE könnten sich komisch oder unberechenbar verhalten."] },
-    { type: "text",paragraphs: ["Keine signifikanten Unterschiede zwischen den beiden Stichproben zeigten sich bei der Subskala *Stereotypen* und bei der emotionalen Reaktion *Angst. "] }
 
 
 
@@ -525,39 +592,60 @@ const chapters = [
   id: "kapitel7",
   title: "Kapitel 7: Welche Unterschiede werden bei den emotionalen Reaktionen gegenüber PWE deutlich?",
   elements: [
-      { type: "text", headline: "Welche Unterschiede werden bei den emotionalen Reaktionen gegenüber PWE deutlich?",
-      paragraphs: ["## Welche Unterschiede werden bei den emotionalen Reaktionen gegenüber PWE deutlich?"] },
-      { type: "text", paragraphs: ["## Wut",
-      "Im Vergleich mit Deutschen geben Japaner:innen häufiger an, mit Wut auf PWE zu reagieren oder sich von ihnen genervt zu fühlen. Das ist besonders auffällig, da in der japanischen Kultur Wut seltener direkt ausgedrückt wird."] },
-    { type: "text", paragraphs: ["## Mitleid",
-      "Außerdem berichten die japanischen Befragten seltener, Mitleid gegenüber PWE zu empfinden als deutsche. Hierbei muss jedoch beachtet werden, dass vor allem das geringere berichtete Mitleid der japanischen Befragten gegenüber PWE kulturell bedingt sein könnte. Dazu später mehr."] },
-  { type: "text", paragraphs: ["Keine signifikanten Unterschiede zwischen den beiden Stichproben zeigten sich bei der Subskala *Stereotypen* und bei der emotionalen Reaktion *Angst*."] },
-        {
-  type: "html",
-  html: `
-    <div class="graphic-block">
-      <h3>Gruppendifferenzen in der Ausprägung der SAPE-Faktoren mit und ohne Kontrolle sozidemographischer Faktoren</h3>
-      <img src="images/mitohne.png" alt="Distribution Graph" style="width:33%; height:auto;">
-    </div>
-  `
-},
+    {
+      type: "text",
+      headline: "Welche Unterschiede werden bei den emotionalen Reaktionen gegenüber PWE deutlich?",
+      paragraphs: [
+        "## Welche Unterschiede werden bei den emotionalen Reaktionen gegenüber PWE deutlich?"
+      ]
+    },
+    {
+      type: "text",
+      paragraphs: [
+        "#### Wut",
+        "Im Vergleich mit Deutschen geben Japaner:innen häufiger an, mit Wut auf PWE zu reagieren oder sich von ihnen genervt zu fühlen. Das ist besonders auffällig, da in der japanischen Kultur Wut seltener direkt ausgedrückt wird."
+      ]
+    },
+    {
+      type: "text",
+      paragraphs: [
+        "#### Mitleid",
+        "Außerdem berichten die japanischen Befragten seltener, Mitleid gegenüber PWE zu empfinden als deutsche. Hierbei muss jedoch beachtet werden, dass vor allem das geringere berichtete Mitleid der japanischen Befragten gegenüber PWE kulturell bedingt sein könnte. Dazu später mehr."
+      ]
+    },
+    {
+      type: "text",
+      paragraphs: [
+        "Keine signifikanten Unterschiede zwischen den beiden Stichproben zeigten sich bei der Subskala <em>Stereotypen</em> und bei der emotionalen Reaktion <em>Angst</em>."
+      ]
+    },
+    {
+      type: "html",
+      html: `
+        <div class="graphic-block">
+          <h3>Gruppendifferenzen in der Ausprägung der SAPE-Faktoren mit und ohne Kontrolle sozidemographischer Faktoren</h3>
+          <img src="images/mitohne.png" alt="Distribution Graph" style="width:69%; height:auto;">
+        </div>
+      `
+    },
 
-{
-  type: "html",
-  html: `
-    <div class="question-box">
-      <img src="images/denken.png" alt="Denken Icon" />
-      Aber könnte es nicht sein, dass die Differenzen in den Einstellungen gegenüber PWE in Japan und Deutschland nicht kulturell bedingt sind, sondern durch demografische Charakteristika und das Wissen der Befragten zu und die Erfahrungen mit Epilepsie beeinflusst werden?
-    </div>
-    <div class="answer-box">
-      Die Daten zeigen, dass die Unterschiede auch nach Kontrolle dieser Kovariaten signifikant bleiben. Bei vergleichbaren Werten hinsichtlich Alter, Geschlecht, Bildung, Berufsstatus, Wissen zu Epilepsie und Erfahrungen mit PWE, berichten Japaner:innen dennoch von mehr sozialer Distanz, Besorgnis, Wut und weniger Mitleid gegenüber PWE als Deutsche.
-    </div>
-  `
-}
-
-
-
-    ]
+    {
+      type: "html",
+      html: `
+        <div class="question-box">
+          <img src="images/denken.png" alt="Denken Icon" />
+          Aber könnte es nicht sein, dass die Differenzen in den Einstellungen gegenüber PWE in Japan und Deutschland
+          nicht kulturell bedingt sind, sondern durch demografische Charakteristika und das Wissen der Befragten
+          zu und die Erfahrungen mit Epilepsie beeinflusst werden?
+        </div>
+        <div class="answer-box">
+          Die Daten zeigen, dass die Unterschiede auch nach Kontrolle dieser Kovariaten signifikant bleiben. Bei vergleichbaren Werten
+          hinsichtlich Alter, Geschlecht, Bildung, Berufsstatus, Wissen zu Epilepsie und Erfahrungen mit PWE, berichten Japaner:innen
+          dennoch von mehr sozialer Distanz, Besorgnis, Wut und weniger Mitleid gegenüber PWE als Deutsche.
+        </div>
+      `
+    }
+  ]
 }
 ,
 
@@ -568,7 +656,7 @@ const chapters = [
   elements: [
       { type: "text", headline: "Die Wirkung demografischer Faktoren",
       paragraphs: ["## Die Wirkung demografischer Faktoren"] },
-      { type: "text", paragraphs: ["Häufig wird berichtet, dass Unterschiede im Alter oder im Geschlecht die Einstellung zu Erkrankungen entscheidend bestimmen können [6] [7] – wie haben sich diese demografischen Faktoren also auf die SAPE-Kriterien ausgewirkt? Nehmen auch persönliche Erfahrungen mit PWE und faktisches Wissen über Epilepsie einen Einfluss darauf, wie Personen in Japan und Deutschland Betroffenen gegenüber empfinden? Und inwieweit unterscheidet sich die Einflusskraft der demografischen Faktoren zwischen den beiden Ländern?"] },
+      { type: "text", paragraphs: ["Häufig wird berichtet, dass Unterschiede im Alter oder im Geschlecht die Einstellung zu Erkrankungen entscheidend bestimmen können [8] [9] – wie haben sich diese demografischen Faktoren also auf die SAPE-Kriterien ausgewirkt? Nehmen auch persönliche Erfahrungen mit PWE und faktisches Wissen über Epilepsie einen Einfluss darauf, wie Personen in Japan und Deutschland Betroffenen gegenüber empfinden? Und inwieweit unterscheidet sich die Einflusskraft der demografischen Faktoren zwischen den beiden Ländern?"] },
 {
   type: "html",
   html: `
@@ -591,14 +679,14 @@ const chapters = [
   title: "Kapitel 9: Die Problematik um Mitleid",
   elements: [
      {
-  type: "html",
+      type: "text", headline: "Die Problematik um Mitleid",
+      paragraphs: ["## Die Problematik um Mitleid"] },
+
+ { type: "html",
   html: `
   <div class="info-box">
-    <h3 style="margin-top:0; font-size:1.4rem; font-weight:600; border-bottom:2px solid #fff; padding-bottom:0.2em;">
-      Kapitel 9: Die Problematik um Mitleid
-    </h3>
-    <p>
-      Wie bereits hervorgehoben und wie es auch weitere Befunde nahelegen werden, berichtete die japanische Gruppe deutlich weniger Mitleid („pity“) als die deutsche. Dies liegt laut den Autor*innen der Studie an den kulturellen Unterschieden im Ausdruck von Mitleid, welche auch die Mitleidswerte in Japan personenbezogenen Merkmalen gegenüber empfindlicher machen.
+        <p>
+      Wie bereits hervorgehoben und wie es auch weitere Befunde nahelegen werden, berichtete die japanische Gruppe deutlich weniger Mitleid („pity“) als die deutsche. Dies liegt laut den Autor:innen der Studie an den kulturellen Unterschieden im Ausdruck von Mitleid, welche auch die Mitleidswerte in Japan personenbezogenen Merkmalen gegenüber empfindlicher machen.
     </p>
     <p>
       Insbesondere wird dies greifbar, wenn man die Items der Mitleidsskala näher betrachtet:
@@ -633,7 +721,7 @@ const chapters = [
   html: `
     <div class="graphic-block">
       <h3>Differenz in den SAPE-Faktoren zwischen Menschen jünger als 25 Jahre und Menschen älter als 65 Jahre</h3>
-      <img src="images/agesmallerthan25.png" alt="Distribution Graph" style="width:30%; height:auto;">
+      <img src="images/agesmallerthan25.png" alt="Distribution Graph" style="width:55%; height:auto;">
     </div>
   `
 },
@@ -641,12 +729,13 @@ const chapters = [
 {
   type: "html",
   html: `
-  <div class="paragraph-with-icon">
-    <p>
-      In Japan ergaben sich außerdem weitere Auffälligkeiten: Jüngere Personen berichteten einerseits weniger soziale Distanz, andererseits auch höhere Stereotypen als ältere Personen. Während dies in der deutschen Vergleichsgruppe nicht der Fall war, wirft dieser Befund die Forderung nach weiterer Forschung auf, um in Erfahrung zu bringen, ob die jüngere japanische Bevölkerung tatsächlich stärker stereotyp denkt oder ob sie weniger zögerlich ist als ältere Personen, stereotype Einstellungen zu kommunizieren.
-    </p>
-    <img src="images/gluehbirne.png" alt="Glühbirne Icon">
-  </div>
+ <div class="paragraph-with-icon">
+  <p>
+    In Japan ergaben sich außerdem weitere Auffälligkeiten: Jüngere Personen berichteten einerseits weniger soziale Distanz, andererseits auch höhere Stereotypen als ältere Personen. Während dies in der deutschen Vergleichsgruppe nicht der Fall war, wirft dieser Befund die Forderung nach weiterer Forschung auf, um in Erfahrung zu bringen, ob die jüngere japanische Bevölkerung tatsächlich stärker stereotyp denkt oder ob sie weniger zögerlich ist als ältere Personen, stereotype Einstellungen zu kommunizieren.
+  </p>
+  <img src="images/gluehbirne.png" alt="Glühbirne Icon">
+</div>
+
   `
 }
 
@@ -668,8 +757,8 @@ const chapters = [
   type: "html",
   html: `
     <div class="graphic-block">
-      <h3>Differenz in den SAPE-Faktoren von Leuten mit oder ohne Bekantschafft einer PWE</h3>
-      <img src="images/exp1.png" alt="Distribution Graph" style="width:45%; height:auto;">
+      <h3>Differenz in den SAPE-Faktoren von Leuten mit oder ohne Bekanntschafft einer PWE</h3>
+      <img src="images/exp1.png" alt="Distribution Graph" style="width:55%; height:auto;">
     </div>
   `
 },
@@ -690,7 +779,7 @@ const chapters = [
   type: "html",
   html: `
     <div class="graphic-block">
-      <h3>Differenz in den SAPE-Faktoren von Leuten mit oder ohne Bekantschafft einer PWE</h3>
+      <h3>Differenz in den SAPE-Faktoren von Leuten mit oder ohne Bekanntschafft einer PWE</h3>
       <img src="images/exp1.png" alt="Distribution Graph" style="width:45%; height:auto;">
     </div>
   `
@@ -711,7 +800,7 @@ const chapters = [
   type: "html",
   html: `
     <div class="graphic-block">
-      <h3>Differenz in den SAPE-Faktoren von Mensche mit oder ohne Kenntniss über richtiges Verhalten während eines Anfalls</h3>
+      <h3>Differenz in den SAPE-Faktoren von Menschen mit oder ohne Kenntniss über richtiges Verhalten während eines Anfalls</h3>
       <img src="images/exp3.png" alt="Distribution Graph" style="width:35%; height:auto;">
     </div>
   `
@@ -725,35 +814,55 @@ const chapters = [
 ,
 
 {
-  id: "kapitel14",
-  title: "Kapitel 14: Hat man weniger Mitleid mit PWE, wenn man sich sicher ist, dass Epilepsie erfolgreich behandelt werden kann?",
+   id: "kapitel14",
+  title: "Kapitel 14: Berichten Personen, die der Meinung sind, dass Epilepsie erfolgreich behandelt werden kann, auch weniger Mitleid?",
   elements: [
-      { type: "text", headline: "Hat man weniger Mitleid mit PWE, wenn man sich sicher ist, dass Epilepsie erfolgreich behandelt werden kann?",
-      paragraphs: ["## Hat man weniger Mitleid mit PWE, wenn man sich sicher ist, dass Epilepsie erfolgreich behandelt werden kann?"] },
-         { type: "text", paragraphs: ["Sowohl die japanischen als auch die deutschen Befunde hätten diese Frage mit „Ja“ beantwortet:"] },
+    { type: "text", headline: "Berichten Personen, die der Meinung sind, dass Epilepsie erfolgreich behandelt werden kann, auch weniger Mitleid?",
+      paragraphs: ["## Berichten Personen, die der Meinung sind, dass Epilepsie erfolgreich behandelt werden kann, auch weniger Mitleid?"]
+    },
+    { type: "text", paragraphs: ["Ja - sowohl die japanische als auch die deutsche Auswertung sprechen für diesen Befund:"] },
+    { type: "html", html: `
+        <div class="graphic-block">
+          <h3>Differenz in den SAPE-Faktoren zwischen Personen mit oder ohne Auffassung Epilepsie sei erfolgreich behandelbar</h3>
+          <img src="images/exp4.png" alt="Distribution Graph" style="width:45%; height:auto;">
+        </div>
+      `
+    },
+    { type: "text", paragraphs: ["Außerdem ergab sich in der japanischen Gruppe, dass Personen, die der Meinung sind, dass Epilepsiepatient:innen eine günstige Therapieaussicht haben, auch dazu tendierten, eine geringere soziale Distanz aufzuweisen."] },
+
 {
   type: "html",
   html: `
-    <div class="graphic-block">
-      <h3>Differenz in den SAPE-Faktoren zwischen Personen mit oder ohne Auffassung Epilepsie sei erfolgreich Behandelbar</h3>
-      <img src="images/exp4.png" alt="Distribution Graph" style="width:45%; height:auto;">
+    <div style="
+      background: #9cc2f4;
+      color: #000;
+      padding: 0.8rem 1rem;
+      border-radius: 0.6rem;
+      margin: 1em 0;
+      font-weight: bold;
+      box-shadow: 0 0 8px rgba(156,194,244,0.6);
+    ">
+      Nebenfaktum: In der deutschen Gruppe schien die Meinung, dass PWE mit hoher Erfolgswahrscheinlichkeit therapierbar sind, mit mehr selbsteingeschätzter Wut ihnen gegenüber einherzugehen.
     </div>
   `
-},
-        { type: "text", paragraphs: ["Außerdem ergab sich in der japanischen Gruppe, dass Personen, die der Meinung sind, dass Epilepsiepatient*innen eine günstige Therapieaussicht haben, auch dazu tendierten, eine geringere soziale Distanz aufzuweisen."] },
-        { type: "text", paragraphs: ["__Nebenfaktum: In der deutschen Gruppe schien die Meinung, dass PWE mit hoher Erfolgswahrscheinlichkeit therapierbar sind, mit mehr selbsteingeschätzter Wut ihnen gegenüber einherzugehen."] },
-
-
-    ]
 }
+
+
+
+
+
+  ]
+}
+
+
 ,
 
 {
   id: "kapitel15",
-  title: "Kapitel 15: Wie verändert es die Sicht auf PWE, wenn die Befragten viel über die Symptome und Ursachen der Erkrankung wissen? (Teil 1)",
+  title: "Kapitel 15: Bekunden Personen mit einem breiten Wissen über Epilepsie-Symptome auch weniger Stereotype? (Teil 1)",
   elements: [
-      { type: "text", headline: "Wie verändert es die Sicht auf PWE, wenn die Befragten viel über die Symptome und Ursachen der Erkrankung wissen? (Teil 1)",
-      paragraphs: ["## Wie verändert es die Sicht auf PWE, wenn die Befragten viel über die Symptome und Ursachen der Erkrankung wissen? (Teil 1)"] },
+      { type: "text", headline: "Bekunden Personen mit einem breiten Wissen über Epilepsie-Symptome auch weniger Stereotype? (Teil 1)",
+      paragraphs: ["## Bekunden Personen mit einem breiten Wissen über Epilepsie-Symptome auch weniger Stereotype? (Teil 1)"] },
 {
   type: "html",
   html: `
@@ -772,17 +881,17 @@ const chapters = [
 
 {
   id: "kapitel16",
-  title: "Kapitel 16: Wie verändert es die Sicht auf PWE, wenn die Befragten viel über die Symptome und Ursachen der Erkrankung wissen? (Teil 2)",
+  title: "Kapitel 16: Bekunden Personen mit einem breiten Wissen über Epilepsie-Symptome auch weniger Stereotype? (Teil 2)",
   elements: [
-      { type: "text", headline: "Wie verändert es die Sicht auf PWE, wenn die Befragten viel über die Symptome und Ursachen der Erkrankung wissen? (Teil 2)",
-      paragraphs: ["## Wie verändert es die Sicht auf PWE, wenn die Befragten viel über die Symptome und Ursachen der Erkrankung wissen? (Teil 2)"] },
+      { type: "text", headline: "Bekunden Personen mit einem breiten Wissen über Epilepsie-Symptome auch weniger Stereotype? (Teil 2)",
+      paragraphs: ["## Bekunden Personen mit einem breiten Wissen über Epilepsie-Symptome auch weniger Stereotype? (Teil 2)"] },
         { type: "text", paragraphs: ["Nichtsdestotrotz führte das Wissen über die Ursachen der Beeinträchtigung in beiden Ländern nach eigenen Aussagen zu weniger Ärger den Betroffenen gegenüber."] },
 {
   type: "html",
   html: `
     <div class="graphic-block">
       <h3>Differenz in den SAPE-Faktoren zwischen Menschen mit oder ohne Wissen über die Symptome von Epilepsie</h3>
-      <img src="images/knowcauses.png" alt="Distribution Graph" style="width:45%; height:auto;">
+      <img src="images/knowcauses.png" alt="Distribution Graph" style="width:35%; height:auto;">
     </div>
   `
 },
@@ -854,12 +963,12 @@ const chapters = [
    { type: "text", headline: "Was ist die Lösung?",
       paragraphs: ["## Was ist die Lösung?"] },
     { type: "text", paragraphs: ["Fakt ist, dass die negative Einstellung gegenüber Menschen mit Epilepsie in Japan heutzutage immer noch hoch ist, da die Öffentlichkeit nur unzureichend über diese informiert ist und es viele negative Medienberichte gibt. An diesen Aspekten kann man demnach anknüpfen und präventive Maßnahmen einleiten. Hierbei muss jedoch dringend berücksichtigt werden, dass die Interventionen zur Verringerung der Stigmatisierung kulturell angepasst sein müssen. Auch bei der Förderung von epilepsiebezogenem Wissen und Erfahrungen ist Vorsicht geboten: Sie kann die soziale Herabsetzung verringern, damit können aber auch, wie die Studie vermuten lässt, bestimmte Aspekte der Stigmatisierung einhergehen, wie zum Beispiel erhöhte Besorgnis und verstärkte Gefühle von Mitleid in den Selbstberichten."] },
-  
+
   {
   type: "html",
   html: `
     <div class="quote-block">
-      “Scientific knowledge is in perpetual evolution; it finds itself changed from one day to the next”<br>(Piaget, 1970, p. 7).<span class="superscript" onclick="jumpToChapter(20)">⁵</span>
+      “Scientific knowledge is in perpetual evolution; it finds itself changed from one day to the next”<br>(Piaget, 1970, p. 7).<span class="superscript" onclick="jumpToChapter(20)">¹⁰</span>
     </div>
 
   `
@@ -874,18 +983,28 @@ const chapters = [
   id: "kapitel21",
   title: "Kapitel 21: Quellen und Bildnachweise",
   elements: [
+
+  { type: "text", headline: "Quellen und Bildnachweise",
+      paragraphs: ["## Quellen und Bildnachweise"] },
+
     {
       type: "html",
       html: `
         <ol style="margin-left:1.2em; padding-left:1em;">
           <li>
-            Kerkhoff, D., Kuramochi, I., Iwayama, T., Shiganami, T., Kobayashi, S., Pfäfflin, M., Thorbecke, R., Yoshimasu, H., Mayer, A., & May, T. W. (2025). A cross-cultural comparative study of attitudes towards people with epilepsy in Japan and Germany. <em>Epilepsy & Behavior, 168</em>, 110424.
+            Kerkhoff, D., Kuramochi, I., Iwayama, T., Shiganami, T., Kobayashi, S., Pfäfflin, M., Thorbecke, R., Yoshimasu, H., Mayer, A., & May, T. W. (2025). A cross-cultural comparative study of attitudes towards people with epilepsy in Japan and Germany. <em>Epilepsy & Behavior, 168</em>, 110424. <a href="https://doi.org/10.1016/j.yebeh.2025.110424" target="_blank">https://doi.org/10.1016/j.yebeh.2025.110424</a>
+          </li>
+          <li>
+          May, T. W., Pfäfflin, M., Bien, C. G., Hamer, H. M., Holtkamp, M., Rating, D., Schulze-Bonhage, A., Straub, H.-B., Strzelczyk, A., & Thorbecke, R. (2022). Attitudes toward epilepsy assessed by the SAPE questionnaire in Germany–Comparison of its psychometric properties and results in a web-based vs. face-to-face survey. <em> Epilepsy & Behavior, 130</em>, 108665. <a href="https://doi.org/10.1016/j.yebeh.2022.108665" target="_blank">https://doi.org/10.1016/j.yebeh.2022.108665</a>
+          </li>
+          <li>
+          Kuramochi, I., Iwayama, T., Shiganami, T., Kobayashi, S., Pfäfflin, M., Thorbecke, R., Yoshimasu, H., Mayer, A., May, T. W., & Kerkhoff, D. (2024). Validation of the Japanese version of the scales of the attitudes toward people with epilepsy (SAPE-J). <em> Epilepsia Open, 9(5), 1910-1921</em>. <a href="https://doi.org/10.1002/epi4.13040" target="_blank">https://doi.org/10.1002/epi4.13040</a>
           </li>
           <li>
             Bergius, R. J. W. (2022). Distanz, soziale. In M. A. Wirtz (Hrsg.), <em>Dorsch – Lexikon der Psychologie</em> (20. überarb. Aufl.). Hogrefe. Abgerufen am 11. Juni 2025, von <a href="https://dorsch.hogrefe.com/stichwort/distanz-soziale" target="_blank">https://dorsch.hogrefe.com/stichwort/distanz-soziale</a>
           </li>
           <li>
-            Fischer, P., Asal, K., & Krüger, J. (2013). <em>Sozialpsychologie für Bachelor</em>. Springer. <a href="https://doi.org/10.1007/978-3-642-30272-5" target="_blank">https://doi.org/10.1007/978-3-642-30272-5</a>
+            Fischer, P., Asal, K., & Krüger, J. (2013). <em>Sozialpsychologie für Bachelor</em>. Springer. Abgerufen am 11. Juni 2025 von <a href="https://doi.org/10.1007/978-3-642-30272-5" target="_blank">https://doi.org/10.1007/978-3-642-30272-5</a>
           </li>
           <li>
             Neyer, F. J. (2022). Selbstbericht. In M. A. Wirtz (Hrsg.), <em>Dorsch – Lexikon der Psychologie</em> (20. überarb. Aufl.). Hogrefe. Abgerufen am 18. Juni 2025, von <a href="https://dorsch.hogrefe.com/stichwort/selbstbericht" target="_blank">https://dorsch.hogrefe.com/stichwort/selbstbericht</a>
@@ -915,224 +1034,232 @@ const chapters = [
   ]
 }
 
+
+
 ];
 
-// Kapitel x=i–20 ergänzen
-for(let i=21;i<21;i++){
-  if(i!==21){
-    chapters.splice(i-1,0,{
-      id:"kapitel"+i,
-      title:"Kapitel "+i,
-      elements:[
-        {type:"text", paragraphs:["Dies ist ein Platzhaltertext für Kapitel "+i+"."]}
-      ]
-    });
-  }
-}
 
 const toc = document.getElementById("toc");
-const content = document.getElementById("content-inner");
+const content = document.getElementById("content");
 const chapterEls = [];
-const elementCounts = chapters.map(c => c.elements.length);
 let currentChapter = 0;
 let currentElement = -1;
 
-// TOC
-chapters.forEach((ch,i)=>{
+/* ---------- TOC ---------- */
+chapters.forEach((ch, i) => {
   const li = document.createElement("li");
   const btn = document.createElement("button");
   btn.textContent = ch.title;
-  btn.onclick = () => showChapter(i,0);
+  btn.onclick = () => showChapter(i, -1); // -1 = nur Überschriften anzeigen
   li.appendChild(btn);
   toc.appendChild(li);
 });
 
-// Kapitel erzeugen
-chapters.forEach((ch,i)=>{
+/* ---------- Kapitel erzeugen ---------- */
+chapters.forEach((ch) => {
+  if (!ch || !ch.elements || !ch.elements.length) return;
+
   const section = document.createElement("section");
   section.className = "chapter";
   section.id = ch.id;
-  ch.elements.forEach(el=>{
-    let node;
-    if(el.type==="text"){
-      node = document.createElement("article");
-      node.className="build-element build-text";
-      el.paragraphs.forEach(p=>{
+
+  let container = section;
+  if (ch.id === "kapitel7") {
+    container = document.createElement("div");
+    container.className = "grid-inner";
+    section.appendChild(container);
+  }
+
+  ch.elements.forEach((el) => {
+    const node = document.createElement("article");
+    node.className = "build-element build-text";
+
+    if (el.type === "text" && el.paragraphs && el.paragraphs.length) {
+      el.paragraphs.forEach(p => {
         const pTag = document.createElement("p");
 
-        if (p.startsWith("###")) {
-    pTag.classList.add("underlined-subtitle");
-    pTag.textContent = p.replace(/^###/, "").trim();
-  }
-  else if (p.startsWith("##")) {
-    pTag.classList.add("subtitle");
-    pTag.textContent = p.replace(/^##/, "").trim();
-        }
-        else if(p.startsWith("__")){
+        if (p.startsWith("####")) {
+          pTag.classList.add("subtitle", "tight");
+          pTag.textContent = p.replace(/^####/, "").trim();
+        } else if (p.startsWith("###")) {
+          pTag.classList.add("underlined-subtitle");
+          pTag.textContent = p.replace(/^###/, "").trim();
+          node.classList.add("is-heading");
+        } else if (p.startsWith("##")) {
+          pTag.classList.add("subtitle", "tight");
+          pTag.textContent = p.replace(/^##/, "").trim();
+          node.classList.add("is-heading");
+        } else if (p.startsWith("__")) {
           const notifText = p.replace(/^__/, "").trim();
-          pTag.style.display="none";
-          if(!node.dataset.notification){
-            node.dataset.notification = notifText;
-          } else {
-            node.dataset.notification += " | " + notifText;
-          }
-        }
-        else{
-          let processed = p;
-
-          // Fußnote
-          processed = processed.replace(/\[(\d+)\]/g, (match, num) => {
-  const superscriptMap = {
-    "1": "¹",
-    "2": "²",
-    "3": "³",
-    "4": "⁴",
-    "5": "⁵",
-    "6": "⁶",
-    "7": "⁷",
-    "8": "⁸",
-    "9": "⁹"
-  };
-  return `<span class="superscript" onclick="jumpToChapter(20)">${superscriptMap[num] || num}</span>`;
-});
-
-          // Tooltip
-          processed = processed.replace(/\{\{(.*?)\|(.*?)\}\}/g,
-            (m, text, tip) => `<span class="tooltip" data-tooltip="${tip.trim()}">${text.trim()}</span>`);
-
-            // Inline-Formatierung fett und kursiv
-              processed = processed
-                .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-                .replace(/\*(.*?)\*/g, "<em>$1</em>");
-
-
-
-          // Fett
-          processed = processed.replace(/\*\*(.*?)\*\*/g,
-            (m, text) => `<strong>${text.trim()}</strong>`);
-
-          // Kursiv
-          processed = processed.replace(/\*(.*?)\*/g,
-            (m, text) => `<em>${text.trim()}</em>`);
-
+          node.dataset.notification = notifText;
+          node.dataset.notifShown = "0";  // Flag für einmalige Anzeige
+          pTag.style.display = "none";
+        } else {
+          const processed = p
+            .replace(/\[(\d+)\]/g, (m, num) => `<span class="superscript">${num}</span>`)
+            .replace(/\{\{(.*?)\|(.*?)\}\}/g, (m, text, tip) => `<span class="tooltip" data-tooltip="${tip}">${text}</span>`)
+            .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+            .replace(/\*(.*?)\*/g, "<em>$1</em>");
           pTag.innerHTML = processed;
         }
+
         node.appendChild(pTag);
       });
+    } else if (el.type === "html" && el.html.trim() !== "") {
+      const div = document.createElement("div");
+      div.innerHTML = el.html;
+      node.appendChild(div);
+      if (div.querySelector(".subtitle, .underlined-subtitle")) {
+        node.classList.add("is-heading");
+      }
     }
-    if(el.type==="graphic"){
-      node = document.createElement("div");
-      node.className="build-element build-graphic";
-      const img = document.createElement("img");
-      img.src = el.src;
-      img.alt = el.alt;
-      node.appendChild(img);
-    }
-else if(el.type==="html"){
-  node = document.createElement("article");
-  node.className = "build-element build-text";
-  if(el.headline){
-    const h2 = document.createElement("h2");
-    h2.textContent = el.headline;
-    node.appendChild(h2);
-  }
-  const div = document.createElement("div");
-  div.innerHTML = el.html;
-  node.appendChild(div);
-}
 
-
-    if(node) section.appendChild(node);
+    // Sichtbarkeit prüfen
+    const hasVisibleContent = Array.from(node.childNodes).some(c =>
+      (c.nodeType === 1 && c.textContent.trim() !== "") ||
+      (c.nodeType === 1 && c.tagName === "IMG") ||
+      (c.nodeType === 3 && c.textContent.trim() !== "")
+    );
+    if (hasVisibleContent) container.appendChild(node);
   });
+
   content.appendChild(section);
   chapterEls.push(section);
 });
 
-function setActiveTOC(idx){
-  toc.querySelectorAll("button").forEach((b,i)=>
-    b.classList.toggle("active", i===idx)
+/* ---------- TOC aktiv setzen ---------- */
+function setActiveTOC(idx) {
+  toc.querySelectorAll("button").forEach((b, i) =>
+    b.classList.toggle("active", i === idx)
   );
 }
 
-function showChapter(idx, elemIdx, showAll=false){
-  chapterEls.forEach((sec,i)=>{
-    sec.classList.toggle("active",i===idx);
-    sec.querySelectorAll(".build-element").forEach(e=>e.classList.remove("visible"));
+/* ---------- Kapitel anzeigen (exklusiv) ---------- */
+function showChapter(idx, startIndex = -1) {
+  chapterEls.forEach((sec, i) => {
+    const active = i === idx;
+    sec.classList.toggle("active", active);
+    sec.style.display = active ? "block" : "none";
+    sec.querySelectorAll(".build-element").forEach(e => e.classList.remove("visible"));
+    if (active) sec.querySelectorAll(".build-element.is-heading").forEach(e => e.classList.add("visible"));
   });
-  currentChapter=idx;
-  currentElement=showAll ? elementCounts[idx]-1 : elemIdx;
-  showElements();
+
+  currentChapter = idx;
+  currentElement = startIndex;
   setActiveTOC(idx);
+  showElements();
 }
 
-function showElements(){
+/* ---------- Elemente ein-/ausblenden ---------- */
+function showElements() {
   const els = chapterEls[currentChapter].querySelectorAll(".build-element");
-  els.forEach((el,i)=>{
-    el.classList.toggle("visible",i<=currentElement);
+  els.forEach((el, i) => {
+    if (el.classList.contains("is-heading")) {
+      el.classList.add("visible");
+    } else {
+      el.classList.toggle("visible", currentElement >= 0 && i <= currentElement);
+
+      if (el.dataset.notification && el.dataset.notifShown === "0" && el.classList.contains("visible")) {
+        showNotification(el.dataset.notification);
+        el.dataset.notifShown = "1";
+      }
+
+      if (el.classList.contains("visible")) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
   });
-  const el = els[currentElement];
-  if(el && el.dataset.notification){
-    showNotification(el.dataset.notification);
-  }
 }
 
-let wheelCooldown=false;
-const cooldownTime=250;
-content.addEventListener("wheel",e=>{
-  e.preventDefault();
-  if(wheelCooldown) return;
-  wheelCooldown=true;
-  setTimeout(()=>wheelCooldown=false,cooldownTime);
-  if(e.deltaY>10) nextElement();
-  else if(e.deltaY<-10) prevElement();
-},{passive:false});
+/* ---------- Hilfsfunktionen: nächstes/vorheriges NICHT-Heading ---------- */
+function findNextNonHeading(startExclusive, direction) {
+  const els = chapterEls[currentChapter].querySelectorAll(".build-element");
+  let i = startExclusive + direction;
+  while (i >= 0 && i < els.length) {
+    if (!els[i].classList.contains("is-heading")) return i;
+    i += direction;
+  }
+  return -1;
+}
 
-let startY=null;
-content.addEventListener("touchstart",e=>{
-  if(e.touches.length===1) startY=e.touches[0].clientY;
+/* ---------- Navigation (Scroll/Touch/Buttons) ---------- */
+let wheelCooldown = false;
+const cooldownTime = 250;
+
+content.addEventListener("wheel", e => {
+  e.preventDefault();
+  if (wheelCooldown) return;
+  wheelCooldown = true;
+  setTimeout(() => wheelCooldown = false, cooldownTime);
+  if (e.deltaY > 10) nextElement();
+  else if (e.deltaY < -10) prevElement();
+}, { passive: false });
+
+let startY = null;
+content.addEventListener("touchstart", e => {
+  if (e.touches.length === 1) startY = e.touches[0].clientY;
 });
-content.addEventListener("touchend",e=>{
-  if(startY===null) return;
-  const endY=e.changedTouches[0].clientY;
-  const diff=startY-endY;
-  startY=null;
-  if(Math.abs(diff)>50){
-    if(diff>0) nextElement();
+content.addEventListener("touchend", e => {
+  if (startY === null) return;
+  const endY = e.changedTouches[0].clientY;
+  let diff = startY - endY;  // <-- fix: lokale Variable
+  startY = null;
+  if (Math.abs(diff) > 50) {
+    if (diff > 0) nextElement();
     else prevElement();
   }
 });
 
-function nextElement(){
-  if(currentElement<elementCounts[currentChapter]-1){
-    currentElement++;
+function nextElement() {
+  const nextIdx = findNextNonHeading(currentElement, +1);
+  if (nextIdx !== -1) {
+    currentElement = nextIdx;
     showElements();
-  } else if(currentChapter<chapters.length-1){
-    showChapter(currentChapter+1,0);
-  }
-}
-function prevElement(){
-  if(currentElement>0){
-    currentElement--;
-    showElements();
-  } else if(currentChapter>0){
-    showChapter(currentChapter-1,elementCounts[currentChapter-1]-1);
+  } else if (currentChapter < chapterEls.length - 1) {
+    showChapter(currentChapter + 1, -1);
   }
 }
 
-function jumpToChapter(index){
-  showChapter(index,0,true);
+function prevElement() {
+  const prevIdx = findNextNonHeading(currentElement, -1);
+  if (prevIdx !== -1) {
+    currentElement = prevIdx;
+    showElements();
+  } else if (currentChapter > 0) {
+    showChapter(currentChapter - 1, -1);
+    const els = chapterEls[currentChapter].querySelectorAll(".build-element");
+    let last = els.length - 1;
+    while (last >= 0 && els[last].classList.contains("is-heading")) last--;
+    currentElement = last;
+    showElements();
+  }
 }
 
-function showNotification(text){
+
+
+/* ---------- Sprungmarken ---------- */
+function jumpToChapter(index) {
+  showChapter(index, -1);
+}
+
+/* ---------- Notification ---------- */
+function showNotification(text) {
   const notif = document.getElementById("notification");
   notif.textContent = text;
   notif.classList.add("show");
-  setTimeout(()=>{
-    notif.classList.remove("show");
-  },7500);
+  setTimeout(() => notif.classList.remove("show"), 7500);
 }
 
-showChapter(0,0);
+/* ---------- Initial ---------- */
+showChapter(0, -1);
+
+
+
+
+
+
+
+
 </script>
 </body>
 </html>

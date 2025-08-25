@@ -7,31 +7,43 @@
 
 <style>
 
-/* ---------------- Basis ---------------- */
-body {
+/* ---------------- Basis Fix ---------------- */
+html, body {
   margin: 0;
+  padding: 0;
+  height: 100%;
+  scroll-behavior: smooth;
+  overflow-x: hidden; /* horizontales Scrollen verhindern */
+}
+
+body {
   background: #000;
   color: #fff;
   font-family: sans-serif;
-  overflow-y: auto; /* scroll erlauben */
+  overflow-y: auto; /* Scroll erlauben */
 }
 
-
+/* ---------------- Container Fix ---------------- */
 #app {
   display: flex;
-  min-height: 100vh; /* mindestens die Höhe des Viewports */
+  min-height: 100vh;
   flex-direction: row;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* Sidebar fixieren und unabhängig scrollen */
+/* ---------------- Sidebar Fix ---------------- */
 #sidebar {
   width: 220px;
   background: #111;
   padding: 1em;
-  position: sticky;      /* sticky statt normal */
-  top: 0;                /* bleibt oben beim Scrollen */
-  height: 100vh;         /* volle Höhe */
-  overflow-y: auto;      /* nur die Sidebar scrollt intern */
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  margin: 0; /* Fix: keine extra Pixel oben */
+  box-sizing: border-box;
 }
 
 /* Optional: Scrollbar in der Sidebar sichtbar */
@@ -52,27 +64,34 @@ body {
 #toc button:hover { background:#003355; }
 #toc button.active { background:#002244; font-weight:bold; }
 
-/* ---------------- Content ---------------- */
+/* ---------------- Content Fix ---------------- */
 #content {
   flex: 1;
   padding: 2em;
   display: block;
-  overflow: visible; /* okay */
+  overflow: visible;
+  min-height: 100vh; /* Fix: verhindert leeren Raum oben */
+  margin: 0; /* Fix: keine leeren Pixel oben */
+  box-sizing: border-box;
 }
-
 
 /* Scrollbar komplett ausblenden */
 #content::-webkit-scrollbar { display: none; }
 #content { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* ---------------- Kapitel ---------------- */
-.chapter {
-  display: none; /* standardmäßig unsichtbar */
+/* ---------------- Kapitel Fix ---------------- */
+section.chapter:first-child {
+  margin-top: 0 !important; /* keine extra Pixel oben */
+  padding-top: 0 !important;
+}
+.build-element:first-child {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
 }
 
-.chapter.active {
-  display: block; /* nur das aktive Kapitel sichtbar */
-}
+/* ---------------- Rest deines CSS bleibt unverändert ---------------- */
+/* ... (hier kannst du den gesamten restlichen CSS-Code belassen) ... */
+
 
 
 

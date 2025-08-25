@@ -392,12 +392,14 @@ const chapters =
     id: "kapitel1",
     title: "Kapitel 1: Einstellungen gegenüber Menschen mit Epilepsie – Japan und Deutschland im Vergleich",
     elements: [
+    { type: "text", headline: "Einstellungen gegenüber Menschen mit Epilepsie – Japan und Deutschland im Vergleich",
+      paragraphs: ["## Einstellungen gegenüber Menschen mit Epilepsie – Japan und Deutschland im Vergleich"] },
       { type: "text", headline: "Einstellungen gegenüber Menschen mit Epilepsie – Japan und Deutschland im Vergleich",
-      paragraphs: ["## Eine datengeschichtliche Wiederaufbereitung der Studie „A cross-cultural comparative study of attitudes towards people with epilepsy in Japan and Germany“ von Kerkhoff et al."] },
+      paragraphs: ["#### Eine datengeschichtliche Wiederaufbereitung der Studie „A cross-cultural comparative study of attitudes towards people with epilepsy in Japan and Germany“ von Kerkhoff et al."] },
       { type: "text", paragraphs: ["#### Mit Hingabe erstellt von André Duwe, Emma Takács, Miriam Weis, Raphael Felgendreher und Sofia Sokol – für alle, die Daten nicht nur lesen, sondern erleben möchten."] },
       { type: "text", paragraphs: ["#### Achtung - Optimiert für Desktop-Clients mit einer Auflösung von 1920x1080p - mit Mobilgeräten nur bedingt nutzbar!"] },
       { type: "text", paragraphs: ["**Vorurteile, Stigmatisierung, Exklusion – in allen Ländern der Welt berichten Menschen mit Epilepsie, regelmäßig Opfer dieser Probleme zu sein und psychisch darunter zu leiden. Selbst die Suche nach einer angemessenen Beschäftigung oder sogar das Eingehen einer Ehe fallen deswegen schwer. Aber wie entstehen diese Haltungen überhaupt – hat es etwas mit der Bildung, dem Alter oder gar mit der Kultur der vorurteilsbehafteten Personen zu tun?**"] },
-      { type: "text",paragraphs: ["Im Rahmen dieser Data-Story haben wir uns mit einer kulturvergleichenden Studie zwischen {{Deutschland|erhoben im Jahr 2018}} und {{Japan|erhoben im Jahr 2024}} über Einstellungen zu Personen mit Epilepsie beschäftigt, um den Einfluss der Kultur und sozialdemografischer Faktoren auf Ansichten gegenüber Epilepsiebetroffenen zu untersuchen auf die Problematik der Stigmatisierung von Menschen mit Epilepsie aufmerksam zu machen.[1]"] },
+      { type: "text",paragraphs: ["Im Rahmen dieser Data-Story haben wir uns mit einer kulturvergleichenden Studie zwischen {{Deutschland|erhoben im Jahr 2018}} und {{Japan|erhoben im Jahr 2024}} über Einstellungen zu Personen mit Epilepsie beschäftigt, um den Einfluss der Kultur und sozialdemografischer Faktoren auf Ansichten gegenüber Epilepsiebetroffenen zu untersuchen und auf die Problematik der Stigmatisierung von Menschen mit Epilepsie aufmerksam zu machen.[1]"] },
       { type: "text",paragraphs: ["Hierbei beziehen wir uns auf Fragebögen zu einzelnen Skalen der SAPE und SAPE-J (engl. Scales of the Attitudes towards People with Epilepsy, entwickelt von May et al., 2022)[2], sowie auf demografische Merkmale, Kenntnisse über Epilepsie und persönliche Erfahrungen der Versuchspersonen."] }
     ]
   },
@@ -409,7 +411,7 @@ const chapters =
       paragraphs: ["## Allgemeine Informationen"] },
        { type: "text", headline: "Was sind die SAPE und SAPE-J?",
       paragraphs: ["## Was sind die SAPE und SAPE-J?"] },
-      { type: "text", paragraphs: ["Der **SAPE-Fragebogen** misst die **Einstellungen gegenüber PWE** (Personen mit Epilepsie, engl. People with Epilepsy) mit **sechs Skalen** (validiert von May et al., 2022, Kuramochi et al., 2024)[3], die im Rahmen einer webbasierten  {{Online-Fragebogens|In Deutschland teils webbasiert, teils mit persönlichen Interviews (face-to-face)}} in dieser Studie erhoben wurden. Hierbei wird mit „SAPE“ die deutsche und mit „SAPE-J“ die japanische Version dieser Skalen bezeichnet, wobei die SAPE-J auf den SAPE basieren."] },
+      { type: "text", paragraphs: ["Der **SAPE-Fragebogen** misst die **Einstellungen gegenüber PWE** (Personen mit Epilepsie, engl. People with Epilepsy) mit **sechs Skalen** (validiert von May et al., 2022, Kuramochi et al., 2024)[3], die im Rahmen einer webbasierten  {{Online-Befragung|In Deutschland teils webbasiert, teils mit persönlichen Interviews (face-to-face)}} in dieser Studie erhoben wurden. Hierbei wird mit „SAPE“ die deutsche und mit „SAPE-J“ die japanische Version dieser Skalen bezeichnet, wobei die SAPE-J auf den SAPE basieren."] },
 
       ,
       {
@@ -654,8 +656,7 @@ const chapters =
         <div class="question-box">
           <img src="images/denken.png" alt="Denken Icon" />
           Aber könnte es nicht sein, dass die Differenzen in den Einstellungen gegenüber PWE in Japan und Deutschland
-          nicht kulturell bedingt sind, sondern durch demografische Charakteristika und das Wissen der Befragten
-          zu und die Erfahrungen mit Epilepsie beeinflusst werden?
+          nicht kulturell bedingt sind, sondern durch demografische Charakteristika und das Wissen der Befragten zu PWE sowie die Erfahrungen mit Epilepsie beeinflusst werden?
         </div>
         <div class="answer-box">
           Die Daten zeigen, dass die Unterschiede auch nach Kontrolle dieser Kovariaten signifikant bleiben. Bei vergleichbaren Werten
@@ -759,7 +760,7 @@ const chapters =
 }
 
 ,
-    { type: "text", paragraphs: ["Die vorliegende Tabelle veranschaulicht den Vergleich der SAPE-Faktoren in den Altersgruppen von Personen über 65 und unter 25 Jahren."]},
+    { type: "text", paragraphs: ["Die vorliegende Grafik veranschaulicht den Vergleich der SAPE-Faktoren in den Altersgruppen von Personen über 65 und unter 25 Jahren."]},
 
     ]
 }
@@ -776,7 +777,7 @@ const chapters =
   type: "html",
   html: `
     <div class="graphic-block">
-      <h3>Differenz in den SAPE-Faktoren von Leuten mit oder ohne Bekanntschafft einer PWE</h3>
+      <h3>Differenz in den SAPE-Faktoren von Befragten mit oder ohne Bekanntschaft einer PWE</h3>
       <img src="images/exp1.png" alt="Distribution Graph" style="width:55%; height:auto;">
     </div>
   `
@@ -798,7 +799,7 @@ const chapters =
   type: "html",
   html: `
     <div class="graphic-block">
-      <h3>Differenz in den SAPE-Faktoren von Leuten mit oder ohne Bekanntschafft einer PWE</h3>
+      <h3>Differenz in den SAPE-Faktoren von Befragten mit oder ohne Bekanntschaft einer PWE</h3>
       <img src="images/exp1.png" alt="Distribution Graph" style="width:45%; height:auto;">
     </div>
   `

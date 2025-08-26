@@ -89,13 +89,6 @@ section.chapter:first-child {
   padding-top: 0 !important;
 }
 
-/* ---------------- Rest deines CSS bleibt unverändert ---------------- */
-/* ... (hier kannst du den gesamten restlichen CSS-Code belassen) ... */
-
-
-
-
-
 /* ---------------- Build Elemente ---------------- */
 .build-element {
   opacity: 0;
@@ -125,10 +118,6 @@ p.subtitle {
 }
 .subtitle.tight { margin-bottom:0.1em; }
 .subtitle.tight + p { margin-top:0; }
-
-/* Superscripts, Tooltips, Info-boxen, QA etc. bleiben wie zuvor */
-
-
 .superscript {
   font-size: 0.8rem;
   vertical-align: super;
@@ -384,7 +373,8 @@ p.subtitle {
 <div id="notification"></div>
 
 <script>
-// Kapitel
+// Kapitel werden hier erstellt/generiert
+
 const chapters =
 
 [
@@ -867,10 +857,6 @@ const chapters =
   `
 }
 
-
-
-
-
   ]
 }
 
@@ -905,7 +891,7 @@ const chapters =
   elements: [
       { type: "text", headline: "Bekunden Personen mit einem breiten Wissen über Epilepsie-Symptome auch weniger Stereotype? (Teil 2)",
       paragraphs: ["## Bekunden Personen mit einem breiten Wissen über Epilepsie-Symptome auch weniger Stereotype? (Teil 2)"] },
-        { type: "text", paragraphs: ["Nichtsdestotrotz führte das Wissen über die Ursachen der Beeinträchtigung in beiden Ländern nach eigenen Aussagen zu weniger Ärger den Betroffenen gegenüber."] },
+        { type: "text", paragraphs: ["Nichtsdestotrotz schien das Wissen über die Ursachen der Beeinträchtigung in beiden Ländern nach eigenen Aussagen mit weniger Ärger den Betroffenen gegenüber einherzugehen."] },
 {
   type: "html",
   html: `
@@ -915,7 +901,7 @@ const chapters =
     </div>
   `
 },
-        { type: "text", paragraphs: ["Hervorzuheben ist außerdem, dass höhere Kenntnisse über die Hintergründe von Epilepsie in Japan sogar mehr Mitleid hervorriefen – ein besonderer Befund, zumal in den meisten Fällen weniger selbstberichtetes Mitleid, wie es in der Studie verstanden ist, unter den Japaner:innen auffindbar war."] }
+        { type: "text", paragraphs: [""Hervorzuheben ist außerdem, dass höhere Kenntnisse über die Hintergründe von Epilepsie in Japan mit mehr Mitleid verbunden waren" – ein besonderer Befund, zumal in den meisten Fällen weniger selbstberichtetes Mitleid, wie es in der Studie verstanden ist, unter den Japaner:innen auffindbar war."] }
         ]
 }
 ,
@@ -1270,7 +1256,7 @@ function showNotification(text) {
   setTimeout(() => notif.classList.remove("show"), 7500);
 }
 
-/* ---------- Initial ---------- */
+/* ---------- Initialisierung ---------- */
 showChapter(0, -1);
 
 

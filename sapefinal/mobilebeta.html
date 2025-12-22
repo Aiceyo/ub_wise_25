@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Einstellungen gegenüber Menschen mit Epilepsie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg-color: #0b0d10;
+  --sidebar-bg: #050505;
+  --text-main: #e0e6ed;
+  --accent-blue: #2980b9;
+  --accent-cyan: #00f2fe;
+  --accent-gradient: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+  --font-main: 'Inter', sans-serif;
+  --nav-height: 70px;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  margin: 0; padding: 0;
+  height: 100%; width: 100%;
+  background: var(--bg-color);
+  color: var(--text-main);
+  font-family: var(--font-main);
+  font-size: 18px;
+  overflow: hidden; /* App-Container steuert Scroll */
+}
+
+#app { display: flex; height: 100vh; width: 100vw; }
+
+/* ---------------- Sidebar (Desktop) ---------------- */
+#sidebar {
+  width: 320px;
+  background: var(--sidebar-bg);
+  border-right: 1px solid #222;
+  display: flex; flex-direction: column;
+  padding: 2rem 1.5rem;
+  overflow-y: auto;
+  flex-shrink: 0;
+  z-index: 100;
+}
+
+#sidebar h2 {
+  font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px;
+  color: #666; margin: 0 0 2rem 0;
+}
+
+#toc button {
+  background: none; border: none;
+  color: #8899a6;
+  display: block; width: 100%;
+  text-align: left;
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 8px;
+  margin-bottom: 4px;
+}
+#toc button:hover { background: rgba(255,255,255,0.05); color: #fff; }
+#toc button.active {
+  background: linear-gradient(90deg, rgba(0, 242, 254, 0.1), transparent);
+  color: var(--accent-cyan);
+  font-weight: 600;
+  border-left: 3px solid var(--accent-cyan);
+}
+
+/* ---------------- Content Area ---------------- */
+#content {
+  flex: 1;
+  position: relative;
+  overflow-y: auto; /* Natives Scrollen! */
+  scroll-behavior: smooth;
+  padding: 0;
+}
+
+#content-inner {
+  max-width: 1600px; /* Schön breit für Desktop */
+  margin: 0 auto;
+  padding: 4rem 6rem 150px 6rem;
+  min-height: 100vh;
+}
+
+/* ---------------- Typography ---------------- */
+h1 {
+  font-size: 3.5rem; margin-top: 0; margin-bottom: 0.5em;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+h2 {
+  font-size: 2.5rem; color: var(--accent-cyan);
+  border-bottom: 1px solid #333; padding-bottom: 0.5em; margin: 2em 0 1em 0;
+}
+h3 { font-size: 1.8rem; color: #fff; margin-bottom: 1rem; }
+
+p {
+  line-height: 1.8; margin-bottom: 2em; font-size: 1.25rem;
+  max-width: 1200px; color: #cbd5e1;
+}
+
+.subtitle { font-size: 1.5rem; font-weight: 600; color: #fff; margin-bottom: 0.5rem; display:block; }
+.underlined-subtitle {
+  border-bottom: 3px solid var(--accent-blue); padding-bottom: 0.5rem; margin-bottom: 1.5rem;
+  display: block; font-size: 1.5rem; font-weight: bold; color: var(--accent-cyan);
+}
+
+/* Highlights */
+strong { color: var(--accent-cyan); font-weight: 600; }
+.highlight-marker { border-bottom: 2px solid var(--accent-cyan); color: #fff; }
+.superscript {
+  color: var(--accent-cyan); font-weight: bold; cursor: pointer;
+  font-size: 0.8em; vertical-align: super; transition: all 0.2s;
+}
+.superscript:hover { text-shadow: 0 0 10px var(--accent-cyan); }
+
+/* Tooltips */
+.tooltip { border-bottom: 1px dotted var(--accent-cyan); cursor: help; color: var(--accent-cyan); position: relative; }
+.tooltip::after {
+  content: attr(data-tooltip); position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%);
+  background: #111; border: 1px solid var(--accent-blue); color: #fff; padding: 1em;
+  border-radius: 6px; font-size: 0.9rem; width: max-content; max-width: 300px;
+  pointer-events: none; opacity: 0; transition: opacity 0.2s; z-index: 100;
+}
+.tooltip:hover::after { opacity: 1; }
+
+/* ---------------- Components (Fading) ---------------- */
+/* Wir nutzen CSS für den Fade-In Effekt beim Scrollen, aber OHNE Scroll-Jacking */
+.build-element {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  margin-bottom: 3rem;
+}
+.build-element.visible { opacity: 1; transform: translateY(0); }
+
+/* Boxen */
+.question-box, .answer-box, .info-box, .paragraph-with-icon {
+  padding: 2.5rem; border-radius: 12px; margin: 3rem 0; max-width: 1400px;
+}
+.question-box {
+  background: linear-gradient(135deg, rgba(0, 242, 254, 0.1), transparent);
+  border-left: 6px solid var(--accent-cyan);
+  display: flex; gap: 2rem; align-items: center;
+}
+.question-box img { width: 80px; }
+
+.answer-box {
+  background: rgba(41, 128, 185, 0.1); border-left: 6px solid var(--accent-blue);
+}
+
+.info-box {
+  background: #151920; border: 1px solid #333; position: relative; overflow: hidden;
+}
+.info-box::before { content: ""; position: absolute; top:0; left:0; width: 6px; height: 100%; background: var(--accent-gradient); }
+
+/* Grafiken */
+.graphic-block { margin: 5em 0; text-align: center; }
+.graphic-block img {
+  max-width: 100%; height: auto; max-height: 85vh;
+  border-radius: 12px; border: 1px solid #333;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.image-row-split { display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; margin: 4rem 0; }
+.image-row-split img { max-width: 48%; border-radius: 12px; }
+
+/* Navigation Buttons im Text */
+.nav-buttons {
+  display: flex; justify-content: space-between; margin-top: 6rem; padding-top: 2rem; border-top: 1px solid #333;
+}
+.btn-nav {
+  background: transparent; border: 1px solid var(--accent-blue); color: var(--accent-blue);
+  padding: 1rem 2rem; font-size: 1.1rem; cursor: pointer; border-radius: 50px; transition: all 0.3s;
+}
+.btn-nav:hover { background: var(--accent-blue); color: #fff; box-shadow: 0 0 20px rgba(41, 128, 185, 0.4); }
+.btn-next { margin-left: auto; background: var(--accent-gradient); color: #000; border: none; font-weight: bold; }
+.btn-next:hover { transform: scale(1.05); color: #000; }
+
+/* Grid Kap 7 */
+#kapitel7 .grid-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; }
+#kapitel7 article:nth-of-type(1), #kapitel7 article:nth-of-type(6) { grid-column: 1 / -1; }
+#kapitel7 article:nth-of-type(5) { grid-column: 2; grid-row: 2 / span 4; }
+
+/* Tabellen */
+table { width: 100%; border-collapse: collapse; margin-top: 2em; font-size: 1.1rem; }
+th, td { padding: 1.2em; text-align: left; border: 1px solid #333; }
+th { background: #1a2634; color: var(--accent-cyan); text-transform: uppercase; }
+
+/* ---------------- Mobile ---------------- */
+#mobile-nav {
+  display: none; position: fixed; bottom: 0; left: 0; width: 100%; height: var(--nav-height);
+  background: rgba(10,10,10,0.95); border-top: 1px solid #333; z-index: 1000;
+  justify-content: space-between; align-items: center; padding: 0 1.5rem;
+}
+#mobile-menu-overlay {
+  position: fixed; inset: 0; background: rgba(5,5,5,0.98); z-index: 999;
+  transform: translateY(100%); transition: transform 0.3s ease; padding: 3rem 1rem; overflow-y: auto;
+}
+#mobile-menu-overlay.open { transform: translateY(0); }
+
+@media(max-width: 1100px) {
+  #sidebar { display: none; }
+  #mobile-nav { display: flex; }
+  #content-inner { width: 100%; padding: 2rem 1.5rem 100px 1.5rem; }
+  .question-box, .paragraph-with-icon { flex-direction: column; align-items: flex-start; }
+  #kapitel7 .grid-inner { display: flex; flex-direction: column; gap: 2rem; }
+  .image-row-split img { max-width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <nav id="sidebar">
+    <h2>Inhalt</h2>
+    <ul id="toc" style="list-style:none; padding:0;"></ul>
+  </nav>
+
+  <div id="content">
+    <div id="content-inner"></div>
+  </div>
+</div>
+
+<div id="mobile-nav">
+  <button onclick="prevChapter()" style="background:none;border:none;color:var(--accent-cyan);font-size:1.5rem;">&#9664;</button>
+  <span id="chapter-title-display" style="color:#fff;font-weight:600;">Start</span>
+  <button onclick="toggleMobileMenu()" style="background:none;border:none;color:#fff;font-size:1.5rem;">☰</button>
+  <button onclick="nextChapter()" style="background:none;border:none;color:var(--accent-cyan);font-size:1.5rem;">&#9654;</button>
+</div>
+
+<div id="mobile-menu-overlay">
+  <button onclick="toggleMobileMenu()" style="float:right;background:none;border:none;color:#fff;font-size:2.5rem;margin-bottom:2rem;">&times;</button>
+  <ul id="mobile-toc" style="list-style:none;padding:0;clear:both;"></ul>
+</div>
+
+<script>
+/* DATEN (Inhalt) */
+const chapters = [
+   {
+    id: "kapitel1",
+    title: "Kapitel 1: Einführung",
+    elements: [
+    { type: "text", headline: "Einstellungen gegenüber Menschen mit Epilepsie – Japan und Deutschland im Vergleich",
+      paragraphs: ["## Einstellungen gegenüber Menschen mit Epilepsie – Japan und Deutschland im Vergleich"] },
+      { type: "html",
+      html: `<p class="subtitle tight">Eine datengeschichtliche Wiederaufbereitung der Studie „A cross-cultural comparative study of attitudes towards people with epilepsy in Japan and Germany“ von Kerkhoff et al.<span class="superscript" onclick="jumpToChapter(20)">1</span></p>`},
+      { type: "text", paragraphs: ["#### Erstellt im Rahmen des Seminars „Data Storytelling“ der Universität Bielefeld. Studentische Autorinnen und Autoren: André Duwe, Emma Takács, Miriam Weis, Raphael Felgendreher und Sofia Sokol."] },
+      { type: "text", paragraphs: ["#### Supervision: Dr. Denny Kerkhoff."] },
+      { type: "text", paragraphs: ["#### Für alle, die Daten nicht nur lesen, sondern erleben möchten."] },
+      { type: "text", paragraphs: ["#### Achtung - Optimiert für Desktop-Clients mit einer Auflösung von 1920x1080p - mit Mobilgeräten nur bedingt nutzbar!"] },
+      { type: "text", paragraphs: ["**In verschiedenen Ländern berichten Menschen mit Epilepsie von Vorurteilen, Stigmatisierung, Exklusion ihnen gegenüber. Viele geben an, darunter auch psychisch zu leiden. Selbst die Suche nach einer angemessenen Beschäftigung oder sogar das Eingehen einer Ehe können ihnen deshalb schwerer fallen als anderen Personengruppen. Aber wie können Einstellungen gegenüber Personen mit Epilepsie über verschiedene Länder hinweg vergleichbar erhoben werden? Und können wir beispielsweise alters- oder geschlechterbedingte Unterschiede in den berichteten Einstellungen feststellen?**"] },
+      { type: "text",paragraphs: ["Im Rahmen dieser Data-Story haben wir uns mit einer kulturvergleichenden Studie zwischen {{Deutschland|erhoben im Jahr 2018}} und {{Japan|erhoben im Jahr 2024}} über Einstellungen zu Personen mit Epilepsie beschäftigt, um den Einfluss der Kultur und soziodemografischer Faktoren auf Ansichten gegenüber Epilepsiebetroffenen zu untersuchen und auf die Problematik der Stigmatisierung von Menschen mit Epilepsie aufmerksam zu machen.[1]"] },
+      { type: "text",paragraphs: ["Einstellungen gegenüber Personen mit Epilepsie wurden in der deutschen und japanischen Bevölkerung durch den SAPE [2,3] (engl. Scales of the Attitudes towards People with Epilepsy)[2] Fragebogen erhoben. Darüber hinaus verwendete die Studie die demographischen Merkmale der Stichprobe sowie die von den Versuchspersonen angegebenen Kenntnisse über Epilepsie und ihre persönlichen Erfahrungen mit Personen mit Epilepsie."] }
+    ]
+  },
+  {
+    id:"kapitel2",
+    title:"Kapitel 2: Allgemeine Informationen",
+    elements:[
+      { type: "text", headline: "Allgemeine Informationen", paragraphs: ["## Allgemeine Informationen"] },
+       { type: "text", headline: "Was sind die SAPE und SAPE-J?", paragraphs: ["## Was sind die SAPE und SAPE-J?"] },
+      { type: "text", paragraphs: ["Der **SAPE-Fragebogen** misst die **Einstellungen gegenüber PWE** (Personen mit Epilepsie, engl. People with Epilepsy) mit **sechs Skalen** [(validiert von May et al., 2022, Kuramochi et al., 2024) 3], die im Rahmen einer webbasierten  {{Online-Befragung|In Deutschland teils webbasiert, teils mit persönlichen Interviews (face-to-face)}} erhoben wurden. Um die Repräsentativität der Stichproben weiter zu erhöhen, wurden gewichtete Analysen durchgeführt, um z.B. den Angaben von Personen aus in der Stichprobe unterrepräsentierter Altersgruppen ein höheres Gewicht zu geben. Hierbei wird mit „SAPE“ die deutsche und mit „SAPE-J“ die japanische Version dieser Skalen bezeichnet, wobei die SAPE-J auf den SAPE basieren."] },
+      { type: "html",
+      html: `
+        <table><thead><tr><th>Bestandteil der SAPE</th><th>Erklärung</th><th>Beispielhafte Items</th></tr></thead><tbody>
+        <tr><td>Soziale Distanz</td><td>Distanzwunsch zu PWE</td><td><em>Würden Sie ein Zimmer an eine PWE vermieten?</em></td></tr>
+        <tr><td>Stereotypen</td><td>Subjektive Annahmen</td><td><em>PWE sind weniger intelligent als andere Menschen.</em></td></tr>
+        <tr><td>Besorgnis</td><td>Angst vor Verhalten</td><td><em>Fürchten Sie sich, dass er/sie einen Anfall haben wird?</em></td></tr>
+        <tr><td>Emotionale Reaktionen</td><td>Angst, Ärger, Mitleid</td><td><em>Er/sie macht mir Angst.</em></td></tr>
+        </tbody></table>
+      ` }
+    ]
+  },
+  {
+    id:"kapitel3", title:"Kapitel 3: Soziodemografische Merkmale",
+    elements:[ { type: "text", paragraphs: ["## Über die soziodemografischen Merkmale"] },
+    { type: "html", html: `<table><thead><tr><th>Merkmal</th><th>Items</th></tr></thead><tbody>
+    <tr><td>Demografie</td><td>Alter, Geschlecht, Beschäftigung, Bildung</td></tr>
+    <tr><td>Kenntnisse</td><td>Ursachen, Symptome, Behandlung</td></tr>
+    <tr><td>Erfahrungen</td><td>Bekanntschaft, Anfall gesehen?</td></tr>
+    </tbody></table>`} ]
+  },
+  {
+    id: "kapitel4", title: "Kapitel 4: Herausforderungen",
+    elements: [ { type: "text", paragraphs: ["## Herausforderungen"] },
+    { type: "html", html: `<div class="info-box">Daten basieren auf <strong>Selbstbericht</strong>. Vorsicht vor <strong>sozialer Erwünschtheit</strong>! [6,7]<br>Alternative Erklärungen beachten.</div>` } ]
+  },
+  {
+    id: "kapitel5", title: "Kapitel 5: Demografie",
+    elements: [ { type: "text", paragraphs: ["## Welche demografischen Merkmale charakterisieren die Stichproben?", "Die Teilnehmenden waren im Schnitt 45,5 Jahre alt."] },
+    { type: "text", paragraphs: ["In Deutschland gaben signifikant mehr Menschen an, jemanden mit Epilepsie zu kennen (63% vs 23% in Japan)."] },
+    { type: "html", html: `<div class="graphic-block"><img src="images/distriof_ohne.png"><img src="images/distriof_ohne2.png" style="margin-top:1em;"></div>` } ]
+  },
+  {
+    id: "kapitel6", title: "Kapitel 6: Soziale Distanz",
+    elements: [ { type: "text", paragraphs: ["## Wie unterschiedlich sind soziale Distanz und Besorgnis?", "#### Soziale Distanz", "In Japan signifikant höher.", "#### Besorgnis", "Ebenfalls höher in Japan.", "<uline>Keine Unterschiede bei Stereotypen.</uline>"] } ]
+  },
+  {
+    id: "kapitel7", title: "Kapitel 7: Emotionale Reaktionen",
+    elements: [
+      { type: "text", paragraphs: ["## Welche Unterschiede werden bei den emotionalen Reaktionen deutlich?", "#### Ärger", "Häufiger in Japan, aber insgesamt gering.", "#### Mitleid", "Seltener in Japan.", "#### Angst", "<uline>Keine signifikanten Unterschiede.</uline>"] },
+      { type: "html", html: `<div class="graphic-block"><img src="images/grpdiffwith_out.png"></div>` },
+      { type: "html", html: `<div class="question-box"><img src="images/denken.png"><div>Aber sind das wirklich kulturelle Unterschiede?</div></div><div class="answer-box">Ja, die Daten zeigen: Auch unter Kontrolle anderer Variablen bleiben die Unterschiede signifikant.</div>` }
+    ]
+  },
+  {
+    id: "kapitel8", title: "Kapitel 8: Demografische Faktoren",
+    elements: [ { type: "text", paragraphs: ["## Die Wirkung demografischer Faktoren"] },
+    { type: "html", html: `<div class="graphic-block"><img src="images/gender.png"></div>` },
+    { type: "text", paragraphs: ["Frauen berichteten in beiden Ländern weniger Stereotypen und Wut."] } ]
+  },
+  {
+    id: "kapitel9", title: "Kapitel 9: Mitleid",
+    elements: [ { type: "text", paragraphs: ["## Die Problematik um Mitleid"] },
+    { type: "html", html: `<div class="info-box">Weniger Mitleid in Japan könnte auch sprachliche Gründe haben („pity“ kann herablassend wirken).</div>` } ]
+  },
+  {
+    id: "kapitel10", title: "Kapitel 10: Altersgruppen",
+    elements: [ { type: "text", paragraphs: ["## Haben unterschiedliche Altersgruppen verschiedene Einstellungen?"] },
+    { type: "html", html: `<div class="graphic-block"><img src="images/agesmallerthan25.png"></div>` },
+    { type: "text", paragraphs: ["Jüngere in beiden Ländern zeigen weniger Mitleid."] } ]
+  },
+  {
+    id: "kapitel11", title: "Kapitel 11: Erfahrung (Teil 1)",
+    elements: [ { type: "text", paragraphs: ["## Wie wirken sich persönliche Erfahrungen aus? (Teil 1)"] },
+    { type: "html", html: `<div class="graphic-block"><img src="images/exp1.png"></div>` },
+    { type: "text", paragraphs: ["Bekanntschaft mit PWE führt zu weniger sozialer Distanz."] } ]
+  },
+  {
+    id: "kapitel12", title: "Kapitel 12: Erfahrung (Teil 2)",
+    elements: [ { type: "text", paragraphs: ["## Wie wirken sich persönliche Erfahrungen aus? (Teil 2)", "In Deutschland auch weniger Angst und Besorgnis."] },
+    { type: "html", html: `<div class="graphic-block"><img src="images/exp1.png"></div>` } ]
+  },
+  {
+    id: "kapitel13", title: "Kapitel 13: Wissen",
+    elements: [ { type: "text", paragraphs: ["## Einflüsse des Wissens", "Wissen über Verhalten bei Anfällen reduziert Distanz."] },
+    { type: "html", html: `<div class="graphic-block"><img src="images/exp3.png"></div>` } ]
+  },
+  {
+    id: "kapitel14", title: "Kapitel 14: Behandelbarkeit",
+    elements: [ { type: "text", paragraphs: ["## Glaube an Behandlung", "Wer an Therapieerfolg glaubt, zeigt weniger Besorgnis."] },
+    { type: "html", html: `<div class="graphic-block"><img src="images/exp4.png"></div>` } ]
+  },
+  {
+    id: "kapitel15", title: "Kapitel 15: Symptome",
+    elements: [ { type: "text", paragraphs: ["## Wissen über Symptome"] },
+    { type: "html", html: `<div class="graphic-block"><img src="images/know1.png"></div>` },
+    { type: "text", paragraphs: ["Führt zu weniger Stereotypen."] } ]
+  },
+  {
+    id: "kapitel16", title: "Kapitel 16: Ursachen",
+    elements: [ { type: "text", paragraphs: ["## Wissen über Ursachen"] },
+    { type: "html", html: `<div class="graphic-block"><img src="images/know2.png"></div>` },
+    { type: "text", paragraphs: ["Führt zu weniger Ärger."] } ]
+  },
+  {
+    id: "kapitel17", title: "Kapitel 17: Ergebnisse",
+    elements: [ { type: "text", paragraphs: ["## Wichtigste Ergebnisse", "Japan: Höhere soziale Distanz, Besorgnis, Wut. Weniger Mitleid."] } ]
+  },
+  {
+    id: "kapitel18", title: "Kapitel 18: Gesamtbetrachtung",
+    elements: [ { type: "text", paragraphs: ["## Was zeigt uns die Studie?", "Kulturelle und historische Faktoren (Stigmatisierung in Japan) spielen eine Rolle. Wissen hilft."] } ]
+  },
+  {
+    id: "kapitel19", title: "Kapitel 19: Fazit",
+    elements: [ { type: "text", paragraphs: ["## Fazit", "Online-Stichproben haben Limitationen."] },
+    { type: "html", html: `<div class="image-row-split"><img src="images/zeitung.png"><img src="images/ausgrenzung.png"></div>` } ]
+  },
+  {
+    id: "kapitel20", title: "Kapitel 20: Praxis",
+    elements: [ { type: "text", paragraphs: ["## Praxis", "Aufklärungskampagnen müssen kulturspezifisch sein."] },
+    { type: "html", html: `<div class="quote-block">“Scientific knowledge is in perpetual evolution...” (Piaget, 1970)</div>` } ]
+  },
+  {
+    id: "kapitel21", title: "Kapitel 21: Quellen",
+    elements: [ { type: "text", paragraphs: ["## Quellen und Bildnachweise"] },
+    { type: "html", html: `<ol style="margin-left:1.5em;line-height:1.5;">
+      <li>Kerkhoff et al. (2025). Epilepsy & Behavior...</li>
+      <li>May et al. (2022). Attitudes toward epilepsy...</li>
+      <li>(Alle deine Quellen aus dem Originalcode hier einfügen...)</li>
+    </ol>` } ]
+  }
+];
+
+/* ---------------- LOGIK (Scroll Fix) ---------------- */
+const toc = document.getElementById("toc");
+const mobileToc = document.getElementById("mobile-toc");
+const contentInner = document.getElementById("content-inner");
+const contentContainer = document.getElementById("content");
+let currentChapter = 0;
+
+/* Init */
+function init() {
+  chapters.forEach((ch, i) => {
+    // TOC Desktop
+    const li = document.createElement("li");
+    const btn = document.createElement("button");
+    btn.textContent = ch.title;
+    btn.onclick = () => jumpToChapter(i);
+    li.appendChild(btn);
+    toc.appendChild(li);
+
+    // TOC Mobile
+    const liM = li.cloneNode(true);
+    liM.querySelector("button").onclick = () => { jumpToChapter(i); toggleMobileMenu(false); };
+    mobileToc.appendChild(liM);
+  });
+
+  loadChapter(0);
+
+  // Observer für Einflieg-Effekte
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting) entry.target.classList.add("visible");
+    });
+  }, { threshold: 0.1 });
+
+  // Funktion um Observer neu zu binden
+  window.attachObserver = () => {
+    document.querySelectorAll('.build-element').forEach(el => observer.observe(el));
+  };
+}
+
+function loadChapter(idx, position = "top") {
+  currentChapter = idx;
+  const ch = chapters[idx];
+  document.getElementById("chapter-title-display").textContent = ch.title;
+
+  // Active TOC State
+  document.querySelectorAll("#toc button").forEach((b, i) => b.classList.toggle("active", i === idx));
+
+  // Content bauen
+  let html = "";
+
+  // Spezial-Layout für Kap 7
+  if(ch.id === "kapitel7") html += '<div class="grid-inner">';
+
+  ch.elements.forEach(el => {
+    html += `<article class="build-element">`;
+    if(el.type === "text") {
+      el.paragraphs.forEach(p => {
+        let txt = p.replace(/^#+\s*/, "").replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+        // Link Logik für [x]
+        txt = txt.replace(/\[(\d+)\]/g, (m,n) => `<span class="superscript" onclick="jumpToChapter(${chapters.length-1})">[${n}]</span>`);
+
+        if(p.startsWith("####")) html += `<p class="subtitle tight">${txt}</p>`;
+        else if(p.startsWith("##")) html += `<h2>${txt}</h2>`;
+        else html += `<p>${txt}</p>`;
+      });
+    } else {
+      html += el.html;
+    }
+    html += `</article>`;
+  });
+
+  if(ch.id === "kapitel7") html += '</div>';
+
+  // Navigation Buttons unten
+  html += `<div class="nav-buttons">`;
+  if(idx > 0) html += `<button class="btn-nav" onclick="prevChapter()">← Zurück</button>`;
+  else html += `<div></div>`;
+
+  if(idx < chapters.length - 1) html += `<button class="btn-nav btn-next" onclick="nextChapter()">Weiter →</button>`;
+  html += `</div>`;
+
+  contentInner.innerHTML = html;
+
+  // Observer aktivieren
+  window.attachObserver();
+
+  // Scroll Position setzen
+  if(position === "bottom") {
+    // Kurz warten bis Rendering fertig
+    setTimeout(() => {
+        const lastEl = contentInner.lastElementChild;
+        lastEl.scrollIntoView({ behavior: "auto" });
+    }, 10);
+  } else {
+    contentContainer.scrollTop = 0;
+  }
+}
+
+function nextChapter() {
+  if(currentChapter < chapters.length - 1) {
+    loadChapter(currentChapter + 1, "top");
+  }
+}
+
+function prevChapter() {
+  if(currentChapter > 0) {
+    // "Vorheriger Zustand": Wir springen ans Ende des vorherigen Kapitels
+    loadChapter(currentChapter - 1, "bottom");
+  }
+}
+
+function jumpToChapter(idx) {
+  loadChapter(idx, "top");
+}
+
+function toggleMobileMenu(force) {
+  const el = document.getElementById("mobile-menu-overlay");
+  if(typeof force === "boolean") {
+    if(force) el.classList.add("open"); else el.classList.remove("open");
+  } else {
+    el.classList.toggle("open");
+  }
+}
+
+init();
+
+</script>
+</body>
+</html>

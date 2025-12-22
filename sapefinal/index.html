@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>SAPE - Data Storytelling</title>
+<title>Einstellungen gegenüber Menschen mit Epilepsie – Japan und Deutschland im Vergleich</title>
 
 <style>
 
@@ -283,6 +283,7 @@ p.subtitle {
   #kapitel7 { display:block !important; }
   #kapitel7 article { margin-bottom:0.8rem !important; }
   .graphic-block img { width:100% !important; max-width:100%; }
+  .graphic-block2 img { width:150% !important; max-width:150%; }
   .question-box, .answer-box { flex-direction:column; align-items:flex-start; }
   .question-box img { width:40px; }
 }
@@ -380,17 +381,22 @@ const chapters =
 [
    {
     id: "kapitel1",
-    title: "Kapitel 1: Einstellungen gegenüber Menschen mit Epilepsie – Japan und Deutschland im Vergleich",
+    title: "Kapitel 1: Einführung",
     elements: [
     { type: "text", headline: "Einstellungen gegenüber Menschen mit Epilepsie – Japan und Deutschland im Vergleich",
       paragraphs: ["## Einstellungen gegenüber Menschen mit Epilepsie – Japan und Deutschland im Vergleich"] },
-      { type: "text", headline: "Einstellungen gegenüber Menschen mit Epilepsie – Japan und Deutschland im Vergleich",
-      paragraphs: ["#### Eine datengeschichtliche Wiederaufbereitung der Studie „A cross-cultural comparative study of attitudes towards people with epilepsy in Japan and Germany“ von Kerkhoff et al."] },
-      { type: "text", paragraphs: ["#### Mit Hingabe erstellt von André Duwe, Emma Takács, Miriam Weis, Raphael Felgendreher und Sofia Sokol – für alle, die Daten nicht nur lesen, sondern erleben möchten."] },
+
+      { type: "html",
+      html: `<p class="subtitle tight">Eine datengeschichtliche Wiederaufbereitung der Studie „A cross-cultural comparative study of attitudes towards people with epilepsy in Japan and Germany“ von Kerkhoff et al.<span class="superscript" onclick="jumpToChapter(20)">1</span></p>`},
+      { type: "text", paragraphs: ["#### Erstellt im Rahmen des Seminars „Data Storytelling“ der Universität Bielefeld. Studentische Autorinnen und Autoren: André Duwe, Emma Takács, Miriam Weis, Raphael Felgendreher und Sofia Sokol."] },
+      { type: "text", paragraphs: ["#### Supervision: Dr. Denny Kerkhoff."] },
+      { type: "text", paragraphs: ["#### Für alle, die Daten nicht nur lesen, sondern erleben möchten."] },
       { type: "text", paragraphs: ["#### Achtung - Optimiert für Desktop-Clients mit einer Auflösung von 1920x1080p - mit Mobilgeräten nur bedingt nutzbar!"] },
-      { type: "text", paragraphs: ["**Vorurteile, Stigmatisierung, Exklusion – in allen Ländern der Welt berichten Menschen mit Epilepsie, regelmäßig Opfer dieser Probleme zu sein und psychisch darunter zu leiden. Selbst die Suche nach einer angemessenen Beschäftigung oder sogar das Eingehen einer Ehe fallen deswegen schwer. Aber wie entstehen diese Haltungen überhaupt – hat es etwas mit der Bildung, dem Alter oder gar mit der Kultur der vorurteilsbehafteten Personen zu tun?**"] },
+      { type: "text", paragraphs: ["**In verschiedenen Ländern berichten Menschen mit Epilepsie von Vorurteilen, Stigmatisierung, Exklusion ihnen gegenüber. Viele geben an, darunter auch psychisch zu leiden. Selbst die Suche nach einer angemessenen Beschäftigung oder sogar das Eingehen einer Ehe können ihnen deshalb schwerer fallen als anderen Personengruppen. Aber wie können Einstellungen gegenüber Personen mit Epilepsie über verschiedene Länder hinweg vergleichbar erhoben werden? Und können wir beispielsweise alters- oder geschlechterbedingte Unterschiede in den berichteten Einstellungen feststellen?**"] },
       { type: "text",paragraphs: ["Im Rahmen dieser Data-Story haben wir uns mit einer kulturvergleichenden Studie zwischen {{Deutschland|erhoben im Jahr 2018}} und {{Japan|erhoben im Jahr 2024}} über Einstellungen zu Personen mit Epilepsie beschäftigt, um den Einfluss der Kultur und soziodemografischer Faktoren auf Ansichten gegenüber Epilepsiebetroffenen zu untersuchen und auf die Problematik der Stigmatisierung von Menschen mit Epilepsie aufmerksam zu machen.[1]"] },
-      { type: "text",paragraphs: ["Hierbei beziehen wir uns auf Fragebögen zu einzelnen Skalen der SAPE und SAPE-J (engl. Scales of the Attitudes towards People with Epilepsy, entwickelt von May et al., 2022)[2], sowie auf demografische Merkmale, Kenntnisse über Epilepsie und persönliche Erfahrungen der Versuchspersonen."] }
+      { type: "text",paragraphs: ["Einstellungen gegenüber Personen mit Epilepsie wurden in der deutschen und japanischen Bevölkerung durch den SAPE [2,3] (engl. Scales of the Attitudes towards People with Epilepsy)[2] Fragebogen erhoben. Darüber hinaus verwendete die Studie die demographischen Merkmale der Stichprobe sowie die von den Versuchspersonen angegebenen Kenntnisse über Epilepsie und ihre persönlichen Erfahrungen mit Personen mit Epilepsie."] }
+
+
     ]
   },
   {
@@ -401,7 +407,7 @@ const chapters =
       paragraphs: ["## Allgemeine Informationen"] },
        { type: "text", headline: "Was sind die SAPE und SAPE-J?",
       paragraphs: ["## Was sind die SAPE und SAPE-J?"] },
-      { type: "text", paragraphs: ["Der **SAPE-Fragebogen** misst die **Einstellungen gegenüber PWE** (Personen mit Epilepsie, engl. People with Epilepsy) mit **sechs Skalen** (validiert von May et al., 2022, Kuramochi et al., 2024)[3], die im Rahmen einer webbasierten  {{Online-Befragung|In Deutschland teils webbasiert, teils mit persönlichen Interviews (face-to-face)}} in dieser Studie erhoben wurden. Hierbei wird mit „SAPE“ die deutsche und mit „SAPE-J“ die japanische Version dieser Skalen bezeichnet, wobei die SAPE-J auf den SAPE basieren."] },
+      { type: "text", paragraphs: ["Der **SAPE-Fragebogen** misst die **Einstellungen gegenüber PWE** (Personen mit Epilepsie, engl. People with Epilepsy) mit **sechs Skalen** [(validiert von May et al., 2022, Kuramochi et al., 2024) 3], die im Rahmen einer webbasierten  {{Online-Befragung|In Deutschland teils webbasiert, teils mit persönlichen Interviews (face-to-face)}} erhoben wurden. Um die Repräsentativität der Stichproben weiter zu erhöhen, wurden gewichtete Analysen durchgeführt, um z.B. den Angaben von Personen aus in der Stichprobe unterrepräsentierter Altersgruppen ein höheres Gewicht zu geben. Hierbei wird mit „SAPE“ die deutsche und mit „SAPE-J“ die japanische Version dieser Skalen bezeichnet, wobei die SAPE-J auf den SAPE basieren."] },
 
       ,
       {
@@ -420,7 +426,7 @@ const chapters =
       <tbody>
         <tr>
           <td style="border:1px solid #444; padding:0.6em;">Soziale Distanz</td>
-          <td style="border:1px solid #444; padding:0.6em;">Intimität, die eine Person mit PWE zu haben wünscht oder duldet<span class="superscript" onclick="jumpToChapter(20)">⁴</span></td>
+          <td style="border:1px solid #444; padding:0.6em;">Distanz, die eine Person zu PWE zu haben wünscht oder duldet<span class="superscript" onclick="jumpToChapter(20)">⁴</span></td>
           <td style="border:1px solid #444; padding:0.6em;">
             <em>Würden Sie ein Zimmer an eine Person mit Epilepsie vermieten?</em><br/>
             <em>Würden Sie eine solche Person als Arbeitskollegen akzeptieren?</em>
@@ -443,12 +449,12 @@ const chapters =
         </tr>
         <tr>
           <td style="border:1px solid #444; padding:0.6em;">Emotionale Reaktionen:<br/>
-            <span class="tooltip" data-tooltip="Durch Angst, Wut und Mitleid werden die emotionalen Reaktionen der Versuchspersonen auf PWE erhoben.">
-    Angst, Wut, Mitleid</span>
-          <td style="border:1px solid #444; padding:0.6em;">Reaktionen auf PWE, die von Angst, Wut oder Mitleid geleitet sind</td>
+            <span class="tooltip" data-tooltip="Durch Angst, Ärger und Mitleid werden die emotionalen Reaktionen der befragten Personen auf PWE erhoben.">
+    Angst, Ärger, Mitleid</span>
+          <td style="border:1px solid #444; padding:0.6em;">Reaktionen auf PWE, die von Angst, Ärger oder Mitleid geleitet sind</td>
           <td style="border:1px solid #444; padding:0.6em;">
             <em>Er/sie macht mir Angst. (Angst)</em><br/>
-            <em>Ich fühle mich von ihm/ihr genervt (Wut)</em><br/>
+            <em>Ich fühle mich von ihm/ihr genervt (Ärger)</em><br/>
             <em>Ich habe das Bedürfnis ihm/ihr zu helfen (Mitleid)</em>
           </td>
         </tr>
@@ -476,7 +482,7 @@ const chapters =
   <thead>
     <tr>
       <th style="border: 1px solid #444; background: #336fb3; padding: 0.6em;">
-        Soziodemografisches Merkmal
+        soziodemografischen Merkmal
       </th>
       <th style="border: 1px solid #444; background: #336fb3; padding: 0.6em;">
         erhobene Items
@@ -486,7 +492,7 @@ const chapters =
   <tbody>
     <tr>
       <td style="border:1px solid #444; padding:0.6em;">
-        Demografische Merkmale
+        Demographische Merkmale
       </td>
       <td style="border:1px solid #444; padding:0.6em;">
         ▪ Alter (insgesamt 18–85 Jahre: ≤25 J., 26–45 J., 46–65 J., >65 J.)<br/>
@@ -547,8 +553,8 @@ const chapters =
       headline: "Herausforderungen bei der Interpretation der Daten",
       html: `
         <div class="info-box">
-          Wie die Art der Datenerhebung bereits impliziert, wurden die hier dargestellten Daten durch einen <strong>Selbstbericht</strong> aggregiert. Das bedeutet, dass die SAPE erhoben wurden, indem die Befragten ihr Verhalten und ihre Ansichten gegenüber PWE<span class="superscript" onclick="jumpToChapter(20)">⁶</span> selbst geschildert haben. Bei der Interpretation der Daten aus einem Selbstbericht ist Vorsicht geboten: So kann das Phänomen der <strong>sozialen Erwünschtheit</strong> auftreten. Dies beschreibt die Tendenz der Befragten, <strong>nicht die für sie tatsächlich zutreffende Antwort</strong> zu geben, sondern diejenige, von der sie erwarten, dass sie sozial gebilligt oder erwünscht ist. <span class="superscript" onclick="jumpToChapter(20)">⁷</span><br><br>
-          Jedoch ist dies nicht die einzige Herausforderung, die bei der Deutung der Daten auftreten könnte. Es ist nämlich <strong>nicht möglich</strong>, auf Grundlage der <strong>Untersuchung der Einstellungen auf ein spezifisches Verhalten bzw. bestimmte Umstände</strong> zu schließen, ohne <strong>alternative Erklärungen</strong> zu berücksichtigen. Beispielsweise kennen laut Studie Befragte aus Japan weniger PWE als Befragte aus Deutschland. Nun könnte der Eindruck entstehen, dass dies der Fall sei, da es weniger PWE in Japan als in Deutschland gebe. Allerdings wäre auch eine andere Interpretation möglich: So könnte die geringere Bekanntschaft auch dadurch erklärt werden, dass PWE in Japan ihre Erkrankung häufiger verschweigen als in Deutschland. Bis eindeutige Schlussfolgerungen gezogen werden können, ist es nötig, die Ergebnisse der Studie genau zu betrachten und gegebenenfalls die Zusammenhänge weiter zu untersuchen.
+          Wie die Art der Datenerhebung bereits impliziert, wurden die hier dargestellten Daten durch einen <strong>Selbstbericht</strong> aggregiert. Das bedeutet, dass die SAPE erhoben wurden, indem die Befragten ihre Verhaltensintentionen und ihre Ansichten gegenüber PWE<span class="superscript" onclick="jumpToChapter(20)">⁶</span> selbst geschildert haben. Bei der Interpretation der Daten aus einem Selbstbericht ist Vorsicht geboten: So kann das Phänomen der <strong>sozialen Erwünschtheit</strong> auftreten. Dies beschreibt die Tendenz der Befragten, <strong>nicht die für sie tatsächlich zutreffende Antwort</strong> zu geben, sondern diejenige, von der sie erwarten, dass sie sozial gebilligt oder erwünscht ist. <span class="superscript" onclick="jumpToChapter(20)">⁷</span><br><br>
+          Jedoch ist dies nicht die einzige Herausforderung, die bei der Deutung der Daten auftreten  könnte. Es ist nämlich <strong>nicht möglich</strong>, auf Grundlage der <strong>Untersuchung der Einstellungen auf ein spezifisches Verhalten bzw. bestimmte Umstände</strong> zu schließen, ohne <strong>alternative Erklärungen</strong> zu berücksichtigen. Beispielsweise kennen laut Studie Befragte aus Japan weniger PWE als Befragte aus Deutschland. Dies <strong>könnte</strong> dadurch erklärt werden, dass PWE in Japan ihre Erkrankung häufiger verschweigen als in Deutschland. Bis <strong>eindeutige</strong> Schlussfolgerungen gezogen werden können, ist es nötig, weitere Studien durchzuführen und mögliche Zusammenhänge weiter zu untersuchen.
         </div>
       `
     }
@@ -557,18 +563,20 @@ const chapters =
 ,
 {
   id: "kapitel5",
-  title: "Kapitel 5: Welche demografischen Merkmale charakterisieren die Stichproben?",
+  title: "Kapitel 5: Welche demographischen Merkmale charakterisieren die Stichproben?",
   elements: [
-      { type: "text", headline: "Welche demografischen Merkmale charakterisieren die Stichproben?",
-      paragraphs: ["## Welche demografischen Merkmale charakterisieren die Stichproben?"] },
+      { type: "text", headline: "Welche demographischen Merkmale charakterisieren die Stichproben?",
+      paragraphs: ["## Welche demographischen Merkmale charakterisieren die Stichproben?"] },
       { type: "text", paragraphs: ["Die Teilnehmenden der japanischen Erhebung hatten ein Durchschnittsalter von 45,5 Jahren. Ihr **Bildungsstand war tendenziell {{hoch|(55,43% hoch, 41,73% mittel)}}** und die **Mehrheit war {{erwerbstätig|(64,57%)}}**. Zusätzlich hatte die Stichprobe eine **fast ausgeglichene Verteilung der {{Geschlechter|(49,75% Männer)}}**."] },
 
       { type: "text",paragraphs: ["In der deutschen Stichprobe waren Durchschnittsalter und Geschlechterverteilung ähnlich, jedoch war der **Anteil mit niedrigerem Bildungsstand {{höher|(17,18%)}}** und die Teilnehmenden gaben häufiger an, bereits **Erfahrungen mit PWE** gemacht zu haben. So antwortete beispielsweise nur etwa ein {{Viertel|(23,55%)}} der japanischen Gruppe mit *Ja* auf die Frage, ob sie jemals eine PWE persönlich gekannt haben; in der deutschen Gruppe waren es hingegen mehr als die {{Hälfte| (63,47%)}}."] },
+
+          { type: "text",paragraphs: ["<strong>Bei der Betrachtung des Bildungsstandes</strong> sollte jedoch berücksichtigt werden, dass die Ausprägungen dieser Variable aufgrund unterschiedlicher Schulsysteme nur bedingt vergleichbar sind."] },
       {
   type: "html",
   html: `
     <div class="graphic-block">
-      <h3>Verteilung der demografischen Merkmale und Erfahrungen mit PWE</h3>
+      <h3>Verteilung der demographischischen Merkmale und Erfahrungen mit PWE</h3>
       <img src="images/distriof_ohne.png" alt="Distribution Graph" style="width:49%; height:auto;">
       <img src="images/distriof_ohne2.png" alt="Distribution Graph" style="width:49%; height:auto;">
     </div>
@@ -584,15 +592,18 @@ const chapters =
 
 {
   id: "kapitel6",
-  title: "Kapitel 6: Wie unterschiedlich sind nun die Einstellungen gegenüber PWE in Japan und Deutschland?",
+  title: "Kapitel 6: Wie unterschiedlich sind die soziale Distanz und die Besorgnis gegenüber PWE in Japan und Deutschland?",
   elements: [
-      { type: "text", headline: "Wie unterschiedlich sind nun die Einstellungen gegenüber PWE in Japan und Deutschland?",
-      paragraphs: ["## Wie unterschiedlich sind nun die Einstellungen gegenüber PWE in Japan und Deutschland?"] },
+      { type: "text", headline: "Wie unterschiedlich sind die soziale Distanz und die Besorgnis gegenüber PWE in Japan und Deutschland?",
+      paragraphs: ["## Wie unterschiedlich sind die soziale Distanz und die Besorgnis gegenüber PWE in Japan und Deutschland?"] },
       { type: "text", paragraphs: ["#### Soziale Distanz",
-      "Die augenscheinlich deutlichsten Differenzen können im Bereich Soziale Distanz zu PWE beobachtet werden. Diese ist bei den japanischen Befragten signifikant höher als bei den Deutschen. Japaner:innen geben also beispielsweise seltener als Deutsche an, dass sie einer Person mit Epilepsie ein Zimmer vermieten oder sie als Nachbar:in akzeptieren würden."] },
+      "Die augenscheinlich deutlichsten Differenzen können im Bereich der berichteten Sozialen Distanz zu PWE beobachtet werden. Diese ist bei den japanischen Befragten statistisch signifikant höher als bei den Befragten aus Deutschland. Japaner:innen geben also beispielsweise seltener als Deutsche an, dass sie einer Person mit Epilepsie ein Zimmer vermieten oder sie als Nachbar:in akzeptieren würden. "] },
 
     { type: "text", paragraphs: ["#### Besorgnis",
       "Die Besorgnis in Bezug auf PWE beziehungsweise ihr Verhalten ist unter den Befragten der japanischen Stichprobe ebenfalls höher. So berichteten die japanischen Teilnehmenden zum Beispiel signifikant häufiger, dass sie befürchten, PWE könnten sich komisch oder unberechenbar verhalten."] },
+
+      { type: "text", paragraphs: ["<uline>Es zeigten sich keine signifikanten Unterschiede zwischen den beiden Stichproben bei der Subskala Stereotypen. </uline>"] }
+
 
 
 
@@ -613,48 +624,49 @@ const chapters =
     {
       type: "text",
       paragraphs: [
-        "#### Wut",
-        "Im Vergleich mit Deutschen geben Japaner:innen häufiger an, mit Wut auf PWE zu reagieren oder sich von ihnen genervt zu fühlen. Das ist besonders auffällig, da in der japanischen Kultur Wut seltener direkt ausgedrückt wird."
+        "#### Ärger",
+        "Im Vergleich mit Deutschen geben Japaner:innen häufiger an, mit Ärger auf PWE zu reagieren oder sich von ihnen genervt zu fühlen. Dieser Befund bietet besonders Potenzial für zukünftige Forschung und tiefergehende Diskussionen, da in der japanischen Kultur Ärger in der Regel seltener direkt ausgedrückt wird[8] und die Antworten auf die Items auch Unsicherheit widerspiegeln könnten. Insgesamt ist aber in beiden Stichproben der berichtete Ärger nur gering ausgeprägt."
       ]
     },
     {
       type: "text",
       paragraphs: [
         "#### Mitleid",
-        "Außerdem berichten die japanischen Befragten seltener, Mitleid gegenüber PWE zu empfinden als deutsche. Hierbei muss jedoch beachtet werden, dass vor allem das geringere berichtete Mitleid der japanischen Befragten gegenüber PWE kulturell bedingt sein könnte. Dazu später mehr."
+        "Außerdem berichten die japanischen Befragten seltener, Mitleid gegenüber PWE zu empfinden als deutsche. Hierbei muss jedoch beachtet werden, dass es verschiedene mögliche Erklärungen zu den Unterschieden im berichteten Mitleid gibt. Dazu mehr in Kapitel 9."
       ]
     },
     {
       type: "text",
-      paragraphs: [
-        "Keine signifikanten Unterschiede zwischen den beiden Stichproben zeigten sich bei der Subskala <em>Stereotypen</em> und bei der emotionalen Reaktion <em>Angst</em>."
+      paragraphs: ["#### Angst",
+        "Bei der emotionalen Reaktion Angst <strong><uline>gab es keine signifikanten Unterschiede</strong></uline>."
       ]
     },
     {
       type: "html",
       html: `
-        <div class="graphic-block">
-          <h3>Gruppendifferenzen in der Ausprägung der SAPE-Faktoren mit und ohne Kontrolle soziodemographischer Faktoren</h3>
-          <img src="images/grpdiffwith_out.png" alt="Distribution Graph" style="width:150%; height:auto;">
+        <div class="graphic-block2">
+          <h3>Gruppendifferenzen in der Ausprägung der SAPE-Faktoren mit und ohne Kontrolle soziodemografischer Faktoren</h3>
+          <img src="images/grpdiffwith_out.png" alt="Distribution Graph" style="width:99%; height:auto;">
         </div>
       `
     },
 
-    {
-      type: "html",
-      html: `
-        <div class="question-box">
-          <img src="images/denken.png" alt="Denken Icon" />
-          Aber könnte es nicht sein, dass die Differenzen in den Einstellungen gegenüber PWE in Japan und Deutschland
-          nicht kulturell bedingt sind, sondern durch demografische Charakteristika und das Wissen der Befragten zu PWE sowie die Erfahrungen mit Epilepsie beeinflusst werden?
-        </div>
-        <div class="answer-box">
-          Die Daten zeigen, dass die Unterschiede auch nach Kontrolle dieser Kovariaten signifikant bleiben. Bei vergleichbaren Werten
-          hinsichtlich Alter, Geschlecht, Bildung, Berufsstatus, Wissen zu Epilepsie und Erfahrungen mit PWE, berichten Japaner:innen
-          dennoch von mehr sozialer Distanz, Besorgnis, Wut und weniger Mitleid gegenüber PWE als Deutsche.
-        </div>
-      `
-    }
+  {
+  type: "html",
+  html: `
+    <div class="question-box" style="flex-direction: row; align-items: start;">
+      <img src="images/denken.png" alt="Denken Icon" style="margin-bottom: 0; margin-right: 1em;" />
+      <div>
+        Aber könnte es nicht sein, dass die Differenzen in den Einstellungen gegenüber PWE in Japan und Deutschland
+        nicht kulturell bedingt sind, sondern durch demographische Charakteristika und das Wissen der Befragten zu PWE sowie die Erfahrungen mit Epilepsie beeinflusst werden?
+      </div>
+    </div>
+    <div class="answer-box">
+      In der Studie wurden nicht nur die Unterschiede in den Einstellungen zwischen deutschen und japanischen Befragten berichtet, sondern auch untersucht, inwiefern diese Unterschiede durch demographische Charakteristika und das Wissen der Befragten zu Epilepsie sowie deren Erfahrungen mit PWE erklärt werden könnten.
+      Die Daten zeigen, dass die Unterschiede auch unter Kontrolle dieser Variablen signifikant bleiben: Bei vergleichbaren Werten hinsichtlich Alter, Geschlecht, Bildung, Berufsstatus, Wissen zu Epilepsie und Erfahrungen mit PWE, berichten Japaner:innen dennoch von mehr sozialer Distanz, Besorgnis, Wut und weniger Mitleid gegenüber PWE als Deutsche.
+    </div>
+  `
+  }
   ]
 }
 ,
@@ -662,11 +674,11 @@ const chapters =
 
 {
   id: "kapitel8",
-  title: "Kapitel 8: Die Wirkung demografischer Faktoren",
+  title: "Kapitel 8: Die Wirkung demographischer Faktoren",
   elements: [
-      { type: "text", headline: "Die Wirkung demografischer Faktoren",
-      paragraphs: ["## Die Wirkung demografischer Faktoren"] },
-      { type: "text", paragraphs: ["Häufig wird berichtet, dass Unterschiede im Alter oder im Geschlecht die Einstellung zu Erkrankungen entscheidend bestimmen können [8] [9] – wie haben sich diese demografischen Faktoren also auf die SAPE-Kriterien ausgewirkt? Nehmen auch persönliche Erfahrungen mit PWE und faktisches Wissen über Epilepsie einen Einfluss darauf, wie Personen in Japan und Deutschland Betroffenen gegenüber empfinden? Und inwieweit unterscheidet sich die Einflusskraft der demografischen Faktoren zwischen den beiden Ländern?"] },
+      { type: "text", headline: "Die Wirkung demographischer Faktoren",
+      paragraphs: ["## Die Wirkung demographischer Faktoren"] },
+      { type: "text", paragraphs: ["Häufig wird berichtet, dass Unterschiede im Alter oder im Geschlecht die Einstellung zu Erkrankungen entscheidend bestimmen können [9,10] – wie haben sich diese demographischen Faktoren also auf die Einstellungen gegenüber PWE ausgewirkt? Stehen auch persönliche Erfahrungen mit PWE und faktisches Wissen über Epilepsie im Zusammenhang damit, wie Personen in Japan und Deutschland Betroffenen gegenüber empfinden? Und sind diese Zusammenhänge in beiden Ländern gleich stark?"] },
 {
   type: "html",
   html: `
@@ -695,19 +707,21 @@ const chapters =
  { type: "html",
   html: `
   <div class="info-box">
-        <p>
-      Wie bereits hervorgehoben und wie es auch weitere Befunde nahelegen werden, berichtete die japanische Gruppe deutlich weniger Mitleid („pity“) als die deutsche. Dies liegt laut den Autor:innen der Studie an den kulturellen Unterschieden im Ausdruck von Mitleid, welche auch die Mitleidswerte in Japan personenbezogenen Merkmalen gegenüber empfindlicher machen.
-    </p>
     <p>
-      Insbesondere wird dies greifbar, wenn man die Items der Mitleidsskala näher betrachtet:
+      Wie bereits erwähnt, berichtete die japanische Gruppe weniger Mitleid („pity“) als die deutsche. Dies kann verschiedene Gründe haben: Einerseits kann sich Mitleid in Kulturen unterschiedlich äußern, andererseits kann es sein, dass die Fragen zum Mitleid in der japanischen und deutschen Fragebogenvariante unterschiedlich interpretiert werden können. Verstärkt wird diese Diskrepanz außerdem dadurch, dass jener Begriff in der japanischen Sprache und Kultur unterschiedliche Bedeutungen umfassen kann – sowohl Mitgefühl und den Wunsch zu helfen als auch ein Gefühl von Überlegenheit. Dies wird greifbar, wenn man die Items der Mitleidsskala näher betrachtet:
     </p>
+
+    <p>
+        Wenn Sie einer Person mit Epilepsie begegnen, wie würden Sie reagieren?
+    </p>
+
     <ul style="margin-top:0.5em; margin-bottom:0.5em;">
       <li>P1: „Ich empfinde Mitleid für ihn/sie“</li>
       <li>P2: „Ich empfinde Sympathie für ihn/sie“</li>
       <li>P3: „Ich habe das Bedürfnis, ihm/ihr zu helfen“</li>
     </ul>
     <p>
-      Es fällt auf, dass die Skala teilweise pro-soziales Verhalten widerspiegelt (siehe P2 und P3), aber auch Herablassung ausdrücken kann (insbesondere P1). Die Studie stellte hierbei heraus, dass die japanischen Teilnehmer:innen das Bedürfnis, zu helfen, als etwas Anderes als Mitleid empfanden. Diese Mehrdeutigkeit sollte also bei der Interpretation berücksichtigt werden.
+      Es fällt auf, dass die Skala teilweise pro-soziales Verhalten widerspiegelt (siehe P2 und P3), aber auch Herablassung ausdrücken kann (insbesondere P1).Diese Mehrdeutigkeit sowie sprachlich bedingte Unterschiede sollten also bei der Interpretation berücksichtigt werden, um mögliche kulturelle Missverständnisse hierbei zu vermeiden.
     </p>
   </div>
   `
@@ -724,7 +738,7 @@ const chapters =
   id: "kapitel10",
   title: "Kapitel 10: Haben unterschiedliche Altersgruppen in Japan und Deutschland verschiedene Einstellungen PWE gegenüber?",
   elements: [
-      { type: "text", headline: "Die Wirkung demografischer Faktoren",
+      { type: "text", headline: "Die Wirkung demographischer Faktoren",
       paragraphs: ["## Haben unterschiedliche Altersgruppen in Japan und Deutschland verschiedene Einstellungen PWE gegenüber?"] },
 {
   type: "html",
@@ -741,7 +755,7 @@ const chapters =
   html: `
  <div class="paragraph-with-icon">
   <p>
-    In Japan ergaben sich außerdem weitere Auffälligkeiten: Jüngere Personen berichteten einerseits weniger soziale Distanz, andererseits auch höhere Stereotypen als ältere Personen. Während dies in der deutschen Vergleichsgruppe nicht der Fall war, wirft dieser Befund die Forderung nach weiterer Forschung auf, um in Erfahrung zu bringen, ob die jüngere japanische Bevölkerung tatsächlich stärker stereotyp denkt oder ob sie weniger zögerlich ist als ältere Personen, stereotype Einstellungen zu kommunizieren.
+    In Japan ergaben sich außerdem weitere Auffälligkeiten: Jüngere Personen berichteten einerseits weniger soziale Distanz, andererseits auch höhere Stereotypen als ältere Personen. Auch für diesen Befund gibt es verschiedene Erklärungsansätze; so konnte man im Rahmen der Studie nicht klären, ob Stereotype tatsächlich stärker unter Jüngeren verbreitet sind als unter Älteren, oder ob Jüngere weniger zögerlich sind als ältere Personen, stereotype Einstellungen zu kommunizieren.
   </p>
   <img src="images/gluehbirne.png" alt="Glühbirne Icon">
 </div>
@@ -759,10 +773,10 @@ const chapters =
 
 {
   id: "kapitel11",
-  title: "Kapitel 11: Wie wirken sich persönliche Erfahrungen mit PWE auf die Meinung ihnen gegenüber aus? (Teil 1)",
+  title: "Kapitel 11: Wie wirken sich persönliche Erfahrungen mit PWE auf die Einstellung ihnen gegenüber aus? (Teil 1)",
   elements: [
-      { type: "text", headline: "Wie wirken sich persönliche Erfahrungen mit PWE auf die Meinung ihnen gegenüber aus? (Teil 1)",
-      paragraphs: ["## Wie wirken sich persönliche Erfahrungen mit PWE auf die Meinung ihnen gegenüber aus? (Teil 1)"] },
+      { type: "text", headline: "Wie wirken sich persönliche Erfahrungen mit PWE auf die Einstellung ihnen gegenüber aus? (Teil 1)",
+      paragraphs: ["## Wie wirken sich persönliche Erfahrungen mit PWE auf die Einstellung ihnen gegenüber aus? (Teil 1)"] },
 {
   type: "html",
   html: `
@@ -772,7 +786,7 @@ const chapters =
     </div>
   `
 },
-    { type: "text", paragraphs: ["Eine positiv zu wertende Gemeinsamkeit der beiden Gruppen war, dass die Ja-Antworten beim ersten Item („Haben Sie jemals persönlich jemanden mit Epilepsie gekannt?“) mit weniger sozialer Distanz assoziiert waren: Wer also jemanden mit Epilepsie kannte, berichtete in der Regel weniger Zurückhaltung im Kontakt."] }
+    { type: "text", paragraphs: ["Eine weitere Gemeinsamkeit der beiden Gruppen war, dass die Angabe, persönlich eine Person mit Epilepsie zu kennen oder gekannt zu haben, mit weniger sozialer Distanz assoziiert war: Wer also jemanden mit Epilepsie kannte, berichtete in der Regel weniger Zurückhaltung im Kontakt."] }
     ]
 }
 ,
@@ -780,11 +794,12 @@ const chapters =
 
 {
   id: "kapitel12",
-  title: "Kapitel 12: Wie wirken sich persönliche Erfahrungen mit PWE auf die Meinung ihnen gegenüber aus? (Teil 2)",
+  title: "Kapitel 12: Wie wirken sich persönliche Erfahrungen mit PWE auf die Einstellung ihnen gegenüber aus? (Teil 2)",
   elements: [
-      { type: "text", headline: "Wie wirken sich persönliche Erfahrungen mit PWE auf die Meinung ihnen gegenüber aus? (Teil 2)",
-      paragraphs: ["## Wie wirken sich persönliche Erfahrungen mit PWE auf die Meinung ihnen gegenüber aus? (Teil 2)"] },
+      { type: "text", headline: "Wie wirken sich persönliche Erfahrungen mit PWE auf die Einstellung ihnen gegenüber aus? (Teil 2)",
+      paragraphs: ["## Wie wirken sich persönliche Erfahrungen mit PWE auf die Einstellung ihnen gegenüber aus? (Teil 2)"] },
          { type: "text", paragraphs: ["In der deutschen Erhebung ergaben sich in diesem Zusammenhang auch reduzierte Werte bei Besorgnis und Angst: Es zeigte sich, dass persönliche Bekanntschaften mit Menschen, die Epilepsie haben, zu weniger Angaben von negativen emotionalen Reaktionen ihnen gegenüber führten."] },
+          { type: "text", paragraphs: ["Bei der japanischen Stichprobe sollte diesbezüglich noch beachtet werden, dass ein geringerer persönlicher Kontakt auch damit zusammenhängen kann, dass Epilepsie dort seltener offen kommuniziert wird."] },
 {
   type: "html",
   html: `
@@ -801,11 +816,11 @@ const chapters =
 
 {
   id: "kapitel13",
-  title: "Kapitel 13: Einflüsse der persönlichen Erfahrung mit PWE",
+  title: "Kapitel 13: Einflüsse der Bekanntschaft und des Wissens über Epilepsie auf die SAPE-Faktoren",
   elements: [
-      { type: "text", headline: "Einflüsse der persönlichen Erfahrung mit PWE",
-      paragraphs: ["## Einflüsse der persönlichen Erfahrung mit PWE"] },
-         { type: "text", paragraphs: ["Auch das Wissen, was bei einem epileptischen Anfall zu tun ist, schien die Angabe von sozialer Distanziertheit zu verringern."] },
+      { type: "text", headline: "Einflüsse der Bekanntschaft und des Wissens über Epilepsie auf die SAPE-Faktoren",
+      paragraphs: ["## Einflüsse der Bekanntschaft und des Wissens über Epilepsie auf die SAPE-Faktoren"] },
+         { type: "text", paragraphs: ["Auch das Wissen, was bei einem epileptischen Anfall zu tun ist, war mit einer geringeren sozialen Distanziertheit verbunden."] },
  {
   type: "html",
   html: `
@@ -816,7 +831,7 @@ const chapters =
   `
 },
         { type: "text", paragraphs: ["In Japan war die Kenntnis der Maßnahmen beim Anfall jedoch auch mit Mitleid negativ korreliert. Allerdings greift auch dieser Befund teilweise auf die bereits erläuterte Mehrdeutigkeit des Mitleidkonzepts der Studie zurück."] },
-        { type: "text", paragraphs: ["Zusätzlich bewirkte in Deutschland diese Vertrautheit noch viel mehr als in Japan: Laut der Studie zeigten Versuchspersonen, die angeben, eine PWE persönlich gekannt zu haben, niedrigere selbstberichtete Scores bei Stereotypen, Besorgnis und Angst."] },
+        { type: "text", paragraphs: ["Zusätzlich bewirkte in Deutschland diese Vertrautheit noch viel mehr als in Japan: Laut der Studie zeigten Befragte, die angeben eine PWE persönlich gekannt zu haben, niedrigere selbstberichtete Scores bei Stereotypen, Besorgnis und Angst."] },
 
 
     ]
@@ -825,10 +840,10 @@ const chapters =
 
 {
    id: "kapitel14",
-  title: "Kapitel 14: Berichten Personen, die der Meinung sind, dass Epilepsie erfolgreich behandelt werden kann, auch weniger Mitleid?",
+  title: "Kapitel 14: Berichten Personen, die der Meinung sind, dass Epilepsie erfolgreich behandelt werden kann, auch weniger Besorgnis?",
   elements: [
-    { type: "text", headline: "Berichten Personen, die der Meinung sind, dass Epilepsie erfolgreich behandelt werden kann, auch weniger Mitleid?",
-      paragraphs: ["## Berichten Personen, die der Meinung sind, dass Epilepsie erfolgreich behandelt werden kann, auch weniger Mitleid?"]
+    { type: "text", headline: "Berichten Personen, die der Meinung sind, dass Epilepsie erfolgreich behandelt werden kann, auch weniger Besorgnis?",
+      paragraphs: ["## Berichten Personen, die der Meinung sind, dass Epilepsie erfolgreich behandelt werden kann, auch weniger Besorgnis?"]
     },
     { type: "text", paragraphs: ["Ja - sowohl die japanische als auch die deutsche Auswertung sprechen für diesen Befund:"] },
     { type: "html", html: `
@@ -879,7 +894,7 @@ const chapters =
   `
 },
         { type: "text", paragraphs: ["Sowohl in Japan als auch Deutschland konnte man das Wissen über Symptome mit weniger Stereotypen assoziieren, in der japanischen Gruppe sogar mit weniger Wut."] },
-        { type: "text", paragraphs: ["Bemerkenswert ist jedoch, dass es mehr Besorgnis seitens der deutschen Versuchspersonen gab, wenn sie über viel Kenntnis hinsichtlich der Symptomatik der Epilepsie verfügten."] }
+        { type: "text", paragraphs: ["Bemerkenswert ist jedoch, dass es mehr Besorgnis seitens der deutschen Befragten gab, wenn sie über viel Kenntnis hinsichtlich der Symptomatik der Epilepsie verfügten."] }
         ]
 }
 ,
@@ -891,7 +906,7 @@ const chapters =
   elements: [
       { type: "text", headline: "Kapitel 16: Bekunden Personen mit einem breiten Wissen über Epilepsie-Ursachen weniger Stereotype?",
       paragraphs: ["## Kapitel 16: Bekunden Personen mit einem breiten Wissen über Epilepsie-Ursachen weniger Stereotype?"] },
-        { type: "text", paragraphs: ["Nichtsdestotrotz schien das Wissen über die Ursachen der Beeinträchtigung in beiden Ländern nach eigenen Aussagen mit weniger Ärger den Betroffenen gegenüber einherzugehen."] },
+        { type: "text", paragraphs: ["Ein weiterer Befund ist, dass das Wissen über die Ursachen von Epilepsie in beiden Ländern nach eigenen Aussagen mit weniger Ärger den Betroffenen gegenüber einherzugehen schien."] },
 {
   type: "html",
   html: `
@@ -912,7 +927,7 @@ const chapters =
   elements: [
       { type: "text", headline: "Was sind die wichtigsten Ergebnisse der Studie?",
       paragraphs: ["## Was sind die wichtigsten Ergebnisse der Studie?"] },
-        { type: "text", paragraphs: ["Es gibt signifikante Unterschiede hinsichtlich der selbstberichteten Einstellungen gegenüber PWE in Japan verglichen mit Deutschland. Die Personen aus der japanischen Stichprobe zeigen in ihren Selbstauskünften auch nach Kovariatenkontrolle eine höhere soziale Distanz, Besorgnis und sogar Wut sowie weniger Mitleid als Personen aus der deutschen Erhebung. Im Bereich Soziale Distanz sind die Differenzen dabei am deutlichsten und deuten auf eine möglicherweise weiter verbreitete Stigmatisierung von PWE in Japan hin."] }
+        { type: "text", paragraphs: ["Es gibt relevante Unterschiede hinsichtlich der selbstberichteten Einstellungen gegenüber PWE in Japan verglichen mit Deutschland. Die Personen aus der japanischen Stichprobe berichten eine höhere soziale Distanz, Besorgnis und Wut sowie weniger Mitleid als Personen aus der deutschen Erhebung, wohingegen Angaben zu Stereotypen und Angst in beiden Stichproben vergleichbar niedrig sind. Im Bereich Soziale Distanz sind die Differenzen dabei am deutlichsten, was auf eine möglicherweise weiter verbreitete Stigmatisierung von PWE in Japan hindeuten könnte."] }
 ]
 }
 ,
@@ -920,11 +935,11 @@ const chapters =
 
 {
   id: "kapitel18",
-  title: "Kapitel 18: Was zeigt uns die Studie von Kerkhoff et.al. insgesamt?",
+  title: "Kapitel 18: Was zeigt uns die Studie insgesamt?",
   elements: [
-      { type: "text", headline: "Was zeigt uns die Studie von Kerkhoff et.al. insgesamt?",
-      paragraphs: ["## Was zeigt uns die Studie von Kerkhoff et.al. insgesamt?"] },
-        { type: "text", paragraphs: ["Man hört oft im Alltag, dass der Blickwinkel für die Bewertung eines Ereignisses entscheidend sei – beispielsweise ob das Glas halb voll oder halb leer ist. Man solle also an die Vergangenheit Japans zurückdenken, in der Epilepsie oft mit Psychosen gleichgesetzt wurde und eine noch stärkere Stigmatisierung als heutzutage herrschte. Im Gegensatz dazu wirken aktuelle Befunde sehr positiv: Erfahrungen mit PWE und der Glaube an eine wirksame Behandlung können die selbstberichtete soziale Distanz verringern. Als eine erfolgreiche Entwicklung kann man ebenfalls heranziehen, dass Wissen über Symptome zu weniger Stereotypen und Wut gegenüber Epilepsiebetroffenen führt."] }
+      { type: "text", headline: "Was zeigt uns die Studie insgesamt?",
+      paragraphs: ["## Was zeigt uns die Studie insgesamt?"] },
+        { type: "text", paragraphs: ["In der Studie werden verschiedene Erklärungsansätze für die Befunde diskutiert, einige davon haben wir oben bereits aufgegriffen. Die insgesamt stärkeren negativen Einstellungen gegenüber Personen mit Epilepsie in der japanischen Bevölkerung müssen vor dem Hintergrund betrachtet werden, dass Epilepsie in Japan lange mit Psychosen gleichgesetzt wurde und soziale Distanzierung von Personen mit psychischen Problemen weniger selten ist als in anderen Ländern. Dies könnte den ausgeprägteren Wunsch nach sozialer Distanzierung erklären. Auch strukturelle Faktoren, wie die historische Stigmatisierung von PWE im japanischen Gesundheitssystem, können zu diesen Unterschieden beitragen. Zusätzlich muss berücksichtigt werden, dass die befragten Japaner:innen geringe Erfahrungen mit PWE angeben, wobei dies verschiedene Ursachen haben kann, zum Beispiel, dass Epilepsie in Japan seltener offen kommuniziert oder sogar verheimlicht wird. Die Befunde der Studie zeigen allerdings auch: Erfahrungen mit PWE und der Glaube an eine wirksame Behandlung können die selbstberichtete soziale Distanz verringern. Darüber hinaus kann Wissen über Symptome zu weniger Stereotypen und Wut gegenüber Epilepsiebetroffenen führen.[11,12,13,14]"] }
 ]
 }
 ,
@@ -938,10 +953,19 @@ const chapters =
     // Erstes separates Textblock-Element
     {
       type: "text",
-      headline: "Fazit – Aber ist das ausreichend?",
+      headline: "Fazit und weiterführende Gedanken",
       paragraphs: [
-        "Aber ist das ausreichend? Wenn man den Kontrast zu der deutschen Stichprobe heranzieht, lautet die Antwort sehr klar „Nein“: So wird in der japanischen Öffentlichkeit beispielsweise deutlich häufiger über eine soziale Distanzierung gegenüber Menschen mit Epilepsie berichtet. Das deutet darauf hin, dass man sich in Japan nach wie vor häufig geringe Intimität mit psychisch erkrankten Personen wünscht, sodass eine stärkere Stigmatisierung mit einer erhöhten sozialen Abgrenzung assoziiert ist. Zudem scheint das Potenzial zur Verringerung der Bedenken gegenüber PWE geringer zu sein: In Japan sind nur das weibliche Geschlecht und die Ansicht, dass Epilepsie erfolgreich behandelt werden kann, signifikant mit verringerten selbst eingeschätzten Bedenken verbunden."
+        "Neben den zahlreichen Erkenntnissen der Studie ist es dennoch relevant, ihre Limitationen ebenfalls zu beleuchten und an die zukünftige Forschung zu appellieren. Hierbei sticht insbesondere hervor, dass die Online-Stichprobe aus dem japanischen Raum zu einer möglichen Unterrepräsentation älterer Personen oder Menschen ohne digitale Ressourcen führen könnte. Eine zusätzliche empirische Datensammlung vor Ort könnte mehr Integration herbeiführen."
       ]
+    },
+
+     {
+      type: "text",
+      headline: "Fazit und weiterführende Gedanken",
+      paragraphs: [
+        "Zusätzlich wurden ausschließlich volljährige Personen inkludiert, sodass die Befunde auf Kinder und Jugendliche nicht übertragen werden können. Dies wäre jedoch ein besonders relevanter Aspekt, zumal die Erhebung der Einstellung der jüngeren Bevölkerung für Präventionsmaßnahmen, etwa die Aufklärung über Epilepsie und die Verhinderung beziehungsweise Überwindung der Vorurteile, entscheidend sein kann."
+      ]
+
     },
     // Gesamter Block, der zusammen eingeblendet wird
     {
@@ -952,8 +976,9 @@ const chapters =
       <img src="images/ausgrenzung.png" alt="Ausgrenzung">
     </div>
     <p>
-      Zusätzlich sollte man bedenken, dass die befragten Japaner:innen geringe Erfahrungen mit PWE haben, wobei dies, wie bereits angerissen, nicht auf eine kleinere Anzahl von PWE in Japan zurückzuführen ist. Vielmehr könnte die dadurch anhaltende Stigmatisierung sogar viele PWE und ihre Familien dazu veranlassen, die Diagnose zu verheimlichen. Es herrschen womöglich also nach wie vor falsche Vorstellungen über die Natur der Epilepsie, was zu der größeren sozialen Distanz gegenüber PWE in Japan beitragen kann. Durch diese werden Stereotype wiederum verstärkt – handelt es sich hier um einen ewigen Kreislauf?
+      Bei der Interpretation der Befunde ist zudem ausschlaggebend, die Gefahr der sozialen Erwünschtheit bei dem Antwortverhalten der Befragten wahrzunehmen. Dieser Hinweis wurde im vierten Kapitel ausführlich aufgegriffen.
     </p>
+    <p>Auch die kulturellen Unterschiede sollten mehr in den Vordergrund rücken und stärker berücksichtigt werden: Dies schließt insbesondere die Beachtung der mittleren Antworttendenz in Japan sowie die Optimierung der Mitleidsskala, wie im neunten Kapitel erörtert, ein. </p>
   `
 }
 
@@ -964,17 +989,17 @@ const chapters =
 
 {
   id: "kapitel20",
-  title: "Kapitel 20: Was ist die Lösung?",
+  title: "Kapitel 20: Was bedeuten die Ergebnisse für Forschung und Praxis?",
   elements: [
-   { type: "text", headline: "Was ist die Lösung?",
-      paragraphs: ["## Was ist die Lösung?"] },
-    { type: "text", paragraphs: ["Fakt ist, dass die negative Einstellung gegenüber Menschen mit Epilepsie in Japan heutzutage immer noch hoch ist, da die Öffentlichkeit nur unzureichend über diese informiert ist und es viele negative Medienberichte gibt. An diesen Aspekten kann man demnach anknüpfen und präventive Maßnahmen einleiten. Hierbei muss jedoch dringend berücksichtigt werden, dass die Interventionen zur Verringerung der Stigmatisierung kulturell angepasst sein müssen. Auch bei der Förderung von epilepsiebezogenem Wissen und Erfahrungen ist Vorsicht geboten: Sie kann die soziale Herabsetzung verringern, damit können aber auch, wie die Studie vermuten lässt, bestimmte Aspekte der Stigmatisierung einhergehen, wie zum Beispiel erhöhte Besorgnis und verstärkte Gefühle von Mitleid in den Selbstberichten."] },
+   { type: "text", headline: "Was bedeuten die Ergebnisse für Forschung und Praxis?",
+      paragraphs: ["## Was bedeuten die Ergebnisse für Forschung und Praxis?"] },
+    { type: "text", paragraphs: ["Negative Einstellungen gegenüber Menschen mit Epilepsie sind in Japan wie auch in anderen Ländern eine relevante Problematik. Die Stigmatisierung wird auch dadurch beeinflusst, dass die Öffentlichkeit nicht ausreichend über Epilepsie informiert ist und sie wenig Erfahrungen mit dem Alltag von Personen mit Epilepsie hat. Daran kann man anknüpfen und Maßnahmen erarbeiten, wie z.B. Aufklärungskampagnen oder Schulungen. Diese Interventionen zur Verringerung der Stigmatisierung müssen dabei auf den jeweiligen Kulturkontext angepasst sein. Außerdem muss beachtet werden, dass die Maßnahmen negative Einstellungen tatsächlich verringern, ohne spezifische Aspekte dieser Einstellungen, wie übermäßige Sorge oder Bemitleidung, zu fördern."] },
 
   {
   type: "html",
   html: `
     <div class="quote-block">
-      “Scientific knowledge is in perpetual evolution; it finds itself changed from one day to the next”<br>(Piaget, 1970, p. 7).<span class="superscript" onclick="jumpToChapter(20)">¹⁰</span>
+      “Scientific knowledge is in perpetual evolution; it finds itself changed from one day to the next”<br>(Piaget, 1970, p. 7).<span class="superscript" onclick="jumpToChapter(20)">¹⁵</span>
     </div>
 
   `
@@ -1001,10 +1026,10 @@ const chapters =
             Kerkhoff, D., Kuramochi, I., Iwayama, T., Shiganami, T., Kobayashi, S., Pfäfflin, M., Thorbecke, R., Yoshimasu, H., Mayer, A., & May, T. W. (2025). A cross-cultural comparative study of attitudes towards people with epilepsy in Japan and Germany. <em>Epilepsy & Behavior, 168</em>, 110424. <a href="https://doi.org/10.1016/j.yebeh.2025.110424" target="_blank">https://doi.org/10.1016/j.yebeh.2025.110424</a>
           </li>
           <li>
-          May, T. W., Pfäfflin, M., Bien, C. G., Hamer, H. M., Holtkamp, M., Rating, D., Schulze-Bonhage, A., Straub, H.-B., Strzelczyk, A., & Thorbecke, R. (2022). Attitudes toward epilepsy assessed by the SAPE questionnaire in Germany–Comparison of its psychometric properties and results in a web-based vs. face-to-face survey. <em> Epilepsy & Behavior, 130</em>, 108665. <a href="https://doi.org/10.1016/j.yebeh.2022.108665" target="_blank">https://doi.org/10.1016/j.yebeh.2022.108665</a>
+            May, T. W., Pfäfflin, M., Bien, C. G., Hamer, H. M., Holtkamp, M., Rating, D., Schulze-Bonhage, A., Straub, H.-B., Strzelczyk, A., & Thorbecke, R. (2022). Attitudes toward epilepsy assessed by the SAPE questionnaire in Germany–Comparison of its psychometric properties and results in a web-based vs. face-to-face survey. <em>Epilepsy & Behavior, 130</em>, 108665. <a href="https://doi.org/10.1016/j.yebeh.2022.108665" target="_blank">https://doi.org/10.1016/j.yebeh.2022.108665</a>
           </li>
           <li>
-          Kuramochi, I., Iwayama, T., Shiganami, T., Kobayashi, S., Pfäfflin, M., Thorbecke, R., Yoshimasu, H., Mayer, A., May, T. W., & Kerkhoff, D. (2024). Validation of the Japanese version of the scales of the attitudes toward people with epilepsy (SAPE-J). <em> Epilepsia Open, 9(5), 1910-1921</em>. <a href="https://doi.org/10.1002/epi4.13040" target="_blank">https://doi.org/10.1002/epi4.13040</a>
+            Kuramochi, I., Iwayama, T., Shiganami, T., Kobayashi, S., Pfäfflin, M., Thorbecke, R., Yoshimasu, H., Mayer, A., May, T. W., & Kerkhoff, D. (2024). Validation of the Japanese version of the scales of the attitudes toward people with epilepsy (SAPE-J). <em>Epilepsia Open, 9</em>(5), 1910-1921. <a href="https://doi.org/10.1002/epi4.13040" target="_blank">https://doi.org/10.1002/epi4.13040</a>
           </li>
           <li>
             Bergius, R. J. W. (2022). Distanz, soziale. In M. A. Wirtz (Hrsg.), <em>Dorsch – Lexikon der Psychologie</em> (20. überarb. Aufl.). Hogrefe. Abgerufen am 11. Juni 2025, von <a href="https://dorsch.hogrefe.com/stichwort/distanz-soziale" target="_blank">https://dorsch.hogrefe.com/stichwort/distanz-soziale</a>
@@ -1019,10 +1044,25 @@ const chapters =
             Hossiep, R. (2019). Soziale Erwünschtheit. In M. A. Wirtz (Hrsg.), <em>Dorsch – Lexikon der Psychologie</em> (19. Aufl.). Hogrefe. Abgerufen am 19. Juni 2025, von <a href="https://dorsch.hogrefe.com/stichwort/soziale-erwuenschtheit" target="_blank">https://dorsch.hogrefe.com/stichwort/soziale-erwuenschtheit</a>
           </li>
           <li>
+            Boiger, M., Mesquita, B., Uchida, Y., & Feldman, B. L. (2013). Condoned or condemned: The situational affordance of anger and shame in the United States and Japan. <em>Personality and Social Psychology Bulletin, 39</em>(4), 540–553. Abgerufen am 08. November 2025, von <a href="https://doi.org/10.1177/0146167213478201" target="_blank">https://doi.org/10.1177/0146167213478201</a>
+          </li>
+          <li>
             Vogel, D. L., Heimerdinger-Edwards, S. R., Hammer, J. H., & Hubbard, A. (2011). “Boys don’t cry”: Examination of the links between endorsement of masculine norms, self-stigma, and help-seeking attitudes for men from diverse backgrounds. <em>Journal of Counseling Psychology, 58</em>(3), 368–382. <a href="https://doi.org/10.1037/a0023688" target="_blank">https://doi.org/10.1037/a0023688</a>
           </li>
           <li>
             Schomerus, G., van der Auwera, S., Matschinger, H., Baumeister, S. E., & Angermeyer, M. C. (2015). Do attitudes towards persons with mental illness worsen during the course of life? An age–period–cohort analysis. <em>Acta Psychiatrica Scandinavica, 132</em>(5), 357–364. <a href="https://doi.org/10.1111/acps.12401" target="_blank">https://doi.org/10.1111/acps.12401</a>
+          </li>
+          <li>
+            Griffiths, K. M., Nakane, Y., Christensen, H., Yoshioka, K., Jorm, A. F., & Nakane, H. (2006). Stigma in response to mental disorders: A comparison of Australia and Japan. <em>BMC Psychiatry, 6</em>, 21. <a href="https://doi.org/10.1186/1471-244X-6-21" target="_blank">https://doi.org/10.1186/1471-244X-6-21</a>
+          </li>
+          <li>
+            Richards, M., Hori, H., Sartorius, N., & Kunugi, H. (2014). Cross-cultural comparisons of attitudes toward schizophrenia amongst the general population and physicians: A series of web-based surveys in Japan and the United States. <em>Psychiatry Research, 215</em>(2), 300–307. <a href="https://doi.org/10.1016/j.psychres.2013.12.012" target="_blank">https://doi.org/10.1016/j.psychres.2013.12.012</a>
+          </li>
+          <li>
+            Ando, S., Yamaguchi, S., Aoki, Y., & Thornicroft, G. (2013). Review of mental-health-related stigma in Japan. <em>Psychiatry and Clinical Neurosciences, 67</em>(7), 471–482. <a href="https://doi.org/10.1111/pcn.12086" target="_blank">https://doi.org/10.1111/pcn.12086</a>
+          </li>
+          <li>
+            Wada, T. (1966). Socio-medical aspects of epilepsy in Japan. <em>Epilepsia, 7</em>, 73–79. <a href="https://doi.org/10.1111/j.1528-1157.1966.tb03372.x" target="_blank">https://doi.org/10.1111/j.1528-1157.1966.tb03372.x</a>
           </li>
           <li>
             Piaget, J. (1970). <em>Genetic epistemology</em> (E. Duckworth, Trans.). Columbia University Press. (Original work published 1968)
@@ -1102,10 +1142,11 @@ chapters.forEach((ch) => {
           pTag.style.display = "none";
         } else {
           const processed = p
-            .replace(/\[(\d+)\]/g, (m, num) => `<span class="superscript">${num}</span>`)
-            .replace(/\{\{(.*?)\|(.*?)\}\}/g, (m, text, tip) => `<span class="tooltip" data-tooltip="${tip}">${text}</span>`)
-            .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-            .replace(/\*(.*?)\*/g, "<em>$1</em>");
+    .replace(/\[([^\]]+)\]/g, (m, content) => `<span class="superscript" onclick="jumpToChapter(20)">${content}</span>`)
+    .replace(/\{\{(.*?)\|(.*?)\}\}/g, (m, text, tip) => `<span class="tooltip" data-tooltip="${tip}">${text}</span>`)
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.*?)\*/g, "<em>$1</em>")
+    .replace(/<(?:uline|u)>(.*?)<\/(?:uline|u)>/g, '<span style="text-decoration: underline;">$1</span>');
           pTag.innerHTML = processed;
         }
 
